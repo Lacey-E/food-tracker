@@ -14,10 +14,10 @@ The API offers the following features:
 
 #### **Login System**
 
-* [ ] **It will allow user registration and login, validating input data and ensuring the uniqueness of usernames and emails.**
-* ** Users can provide credentials, which will be validated against existing users.**
-* ** To handle sessions with OAuth providers like Google and GitHub, the API will incorporate middleware to authenticate tokens, decode them, and verify their signatures.**
-* ** The login system will handle token expiration and refresh, allowing clients to obtain new valid JWTs.**
+* It will allow user registration and login, validating input data and ensuring the uniqueness of usernames and emails.
+* Users can provide credentials, which will be validated against existing users.
+* To handle sessions with OAuth providers like Google and GitHub, the API will incorporate middleware to authenticate tokens, decode them, and verify their signatures.
+* The login system will handle token expiration and refresh, allowing clients to obtain new valid JWTs.
 
 ## Database
 
@@ -29,7 +29,6 @@ MongoDB
 * Inventory Items
 * Custom Recipes
 * Shopping Lists
-
 
 ## Endpoints
 
@@ -52,8 +51,6 @@ The API exposes the following endpoints:
 * `POST /api/shopping-list`: Add an item to the user's shopping list.
 * `PUT /api/shopping-list/:itemId`: Update an item in the user's shopping list.
 * `DELETE /api/shopping-list/:itemId`: Remove an item from the user's shopping list.
-
-
 
 ## Authentication
 
