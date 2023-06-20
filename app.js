@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     next();
   });
 
-  app.use('/', require('./routes'));
+app.use('/', require('./routes'));
 
 // Connect to MongoDB and start the server
 initDb((err) => {
