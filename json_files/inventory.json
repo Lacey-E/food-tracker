@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Apples",
+        "quantity": 10,
+        "category": "Fruits",
+        "expiryDate": "2023-07-01"
+    },
+    {
+        "name": "Chicken",
+        "quantity": 2,
+        "category": "Meat",
+        "expiryDate": "2023-06-15"
+    }
+]
