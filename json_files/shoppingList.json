@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Weekly Groceries",
+        "items": [
+            "Apples",
+            "Milk",
+            "Bread",
+            "Eggs"
+        ]
+    },
+    {
+        "name": "Party Supplies",
+        "items": [
+            "Chips",
+            "Soda",
+            "Napkins",
+            "Balloons"
+        ]
+    }
+]

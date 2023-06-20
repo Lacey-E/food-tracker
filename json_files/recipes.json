@@ -1,0 +1,24 @@
+[
+    {
+        "name": "Pasta Carbonara",
+        "ingredients": [
+            "Pasta",
+            "Bacon",
+            "Eggs",
+            "Parmesan Cheese",
+            "Black Pepper"
+        ],
+        "instructions": "1. Cook pasta. 2. Fry bacon. 3. Beat eggs and mix with grated Parmesan cheese. 4. Combine pasta, bacon, and egg mixture. 5. Sprinkle black pepper on top. Enjoy!"
+    },
+    {
+        "name": "Vegetable Stir-Fry",
+        "ingredients": [
+            "Broccoli",
+            "Carrots",
+            "Bell Peppers",
+            "Onions",
+            "Soy Sauce"
+        ],
+        "instructions": "1. Heat oil in a pan. 2. Add onions and stir-fry. 3. Add carrots and bell peppers. 4. Add broccoli and soy sauce. 5. Cook until vegetables are tender. Serve hot!"
+    }
+]
