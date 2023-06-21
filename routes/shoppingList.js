@@ -10,3 +10,5 @@ router.get('/:id', shopController.getShoppingListById);
 
 // POST request to create a new shop list
 router.post('/', shopController.createShoppingList);
+
+module.exports = router;

@@ -10,3 +10,5 @@ router.get('/:id', inventoryController.getInventoryItemById);
 
 // POST request to create a new inventory
 router.post('/', inventoryController.createInventoryItem);
+
+module.exports = router;

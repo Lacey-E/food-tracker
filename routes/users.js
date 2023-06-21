@@ -10,3 +10,5 @@ router.get('/:id', userController.getUserProfileById);
 
 // POST request to create a new user
 router.post('/', userController.createUserProfile);
+
+module.exports = router;

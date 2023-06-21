@@ -8,3 +8,5 @@ router.use('/inventory', require('./inventory'));
 router.use('/recipe', require('./recipes'));
 
 router.use('/list', require('./shoppingList'));
+
+module.exports = router;
