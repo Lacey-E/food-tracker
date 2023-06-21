@@ -70,8 +70,39 @@ const getShoppingListById = async (req, res) => {
   }
 };
 
+
+//Delete an ShoppingList item by id
+const deleteShoppingList = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate Id
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Shopping List Id' });
+    }
+
+    // Delete a specific recipe by ID from the database
+    const db = initDb.getDb().db(database);
+    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+
+    console.log(response);
+    if (response.deletedCount > 0) {
+      res.status(200).json(response) + 'deleted';
+    } else {
+      res.status(500).json('Some error occurred while deleting the Shopping List');
+    }
+
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete List' });
+  }
+  
+};
+
+
+
 module.exports = {
   createShoppingList,
   getAllShoppingLists,
-  getShoppingListById
+  getShoppingListById,
+  deleteShoppingList
 };

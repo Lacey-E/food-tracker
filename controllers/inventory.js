@@ -70,8 +70,39 @@ const getInventoryItemById = async (req, res) => {
   }
 };
 
+
+//Delete an inventory item by id
+const deleteInventoryItem = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate Id
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid inventory item ID.' });
+    }
+
+    // Delete a specific inventory item by ID from the database
+    const db = initDb.getDb().db(database);
+    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+
+    console.log(response);
+    if (response.deletedCount > 0) {
+      res.status(200).json(response) + 'deleted';
+    } else {
+      res.status(500).json('Some error occurred while deleting the Inventory item.');
+    }
+
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete inventory item.' });
+  }
+  
+};
+
+
+
 module.exports = {
   createInventoryItem,
   getAllInventoryItems,
-  getInventoryItemById
+  getInventoryItemById,
+  deleteInventoryItem
 };

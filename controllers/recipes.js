@@ -70,8 +70,37 @@ const getRecipeById = async (req, res) => {
   }
 };
 
+//Delete an Recipe item by id
+const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate Id
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Recipe Id' });
+    }
+
+    // Delete a specific recipe item by ID from the database
+    const db = initDb.getDb().db(database);
+    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+
+    console.log(response);
+    if (response.deletedCount > 0) {
+      res.status(200).json(response) + 'deleted';
+    } else {
+      res.status(500).json('Some error occurred while deleting the Recipe.');
+    }
+
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete Recipe.' });
+  }
+  
+};
+
+
 module.exports = {
   createRecipe,
   getAllRecipes,
-  getRecipeById
+  getRecipeById,
+  deleteRecipe
 };

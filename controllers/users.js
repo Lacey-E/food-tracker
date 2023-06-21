@@ -69,6 +69,38 @@ const getUserProfileById = async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch user profile.' });
     }
   };
+
+
+  //Delete an User  by id
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate Id
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Recipe Id' });
+    }
+
+    // Delete a specific User by ID from the database
+    const db = initDb.getDb().db(database);
+    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+
+    console.log(response);
+    if (response.deletedCount > 0) {
+      res.status(200).json(response) + 'deleted';
+    } else {
+      res.status(500).json('Some error occurred while deleting the User.');
+    }
+
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete User.' });
+  }
+  
+};
   
 
-module.exports = { createUserProfile, getAllUserProfiles, getUserProfileById}
+module.exports = { createUserProfile, 
+  getAllUserProfiles, 
+  getUserProfileById,
+  deleteUser
+}

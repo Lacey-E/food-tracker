@@ -11,4 +11,10 @@ router.get('/:id', shopController.getShoppingListById);
 // POST request to create a new shop list
 router.post('/', shopController.createShoppingList);
 
+//Delete Shopping List by ID
+router.delete('/:id', shopController.deleteShoppingList);
+
+
+
+
 module.exports = router;

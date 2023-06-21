@@ -11,4 +11,9 @@ router.get('/:id', recipeController.getRecipeById);
 // POST request to create a new recipe
 router.post('/', recipeController.createRecipe);
 
+//Delete Recipe by ID
+router.delete('/:id', recipeController.deleteRecipe);
+
+
+
 module.exports = router;

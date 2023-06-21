@@ -11,4 +11,9 @@ router.get('/:id', userController.getUserProfileById);
 // POST request to create a new user
 router.post('/', userController.createUserProfile);
 
+//Delete User by ID
+router.delete('/:id', userController.deleteUser);
+
+
+
 module.exports = router;
