@@ -1,6 +1,6 @@
 const UserProfile = require('../models/userModel');
-const initDb = require('../config/db.config');
-const { ObjectId } = require('mongoose').Types;
+const initDb = require('../config/db');
+const { ObjectId } = require('mongodb');
 const collection = 'user_registry';
 const database = 'food-tracker';
 

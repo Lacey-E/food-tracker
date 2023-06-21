@@ -1,7 +1,7 @@
 const InventoryItem = require('../models/inventoryModel');
-const initDb = require('../config/db.config');
+const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
-const collection = 'inventory_items';
+const collection = 'inventory_collection';
 const database = 'food-tracker';
 
 // Create an inventory item

@@ -1,7 +1,7 @@
 const Recipe = require('../models/recipeModel');
-const initDb = require('../config/db.config');
+const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
-const collection = 'recipes';
+const collection = 'recipe_collection';
 const database = 'food-tracker';
 
 // Create a recipe

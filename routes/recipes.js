@@ -10,3 +10,6 @@ router.get('/:id', recipeController.getRecipeById);
 
 // POST request to create a new recipe
 router.post('/', recipeController.createRecipe);
+
+// Export the router object to be used by other modules
+module.exports = router;

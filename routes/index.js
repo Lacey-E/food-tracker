@@ -1,10 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-router.use('/user', require('./users'));
+// Include the 'users' router for handling user-related routes
+router.use('/users', require('./users'));
 
+// Include the 'inventory' router for handling inventory-related routes
 router.use('/inventory', require('./inventory'));
 
-router.use('/recipe', require('./recipes'));
+// Include the 'recipes' router for handling recipe-related routes
+router.use('/recipes', require('./recipes'));
 
-router.use('/list', require('./shoppingList'));
+// Include the 'shoppingList' router for handling shopping list-related routes
+router.use('/shoppingList', require('./shoppingList'));
+
+// Include the 'dataGenerator' router for handling data generation routes
+router.use('/dataGenerator', require('./dataGenerator'));
+
+module.exports = router;

@@ -10,3 +10,6 @@ router.get('/:id', shopController.getShoppingListById);
 
 // POST request to create a new shop list
 router.post('/', shopController.createShoppingList);
+
+// Export the router object to be used by other modules
+module.exports = router;
