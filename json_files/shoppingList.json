@@ -1,20 +1,13 @@
-[
+
     {
-        "name": "Weekly Groceries",
+        "listName": "Sample Shopping List",
+        "userProfile": "60a8776b95a8e75f0a0f6f9a",
         "items": [
-            "Apples",
-            "Milk",
-            "Bread",
-            "Eggs"
-        ]
-    },
-    {
-        "name": "Party Supplies",
-        "items": [
-            "Chips",
-            "Soda",
-            "Napkins",
-            "Balloons"
-        ]
+            "60a8776b95a8e75f0a0f6f9b",
+            "60a8776b95a8e75f0a0f6f9c"
+        ],
+        "dateCreated": "2023-05-20T12:00:00Z",
+        "isCompleted": false,
+        "priority": "High",
+        "notes": "Sample notes"
     }
-]

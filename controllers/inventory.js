@@ -99,10 +99,41 @@ const deleteInventoryItem = async (req, res) => {
 };
 
 
+// Update an inventory item by ID
+const updateInventoryItem = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate the provided ID as a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid inventory item ID.' });
+    }
+
+    const updatedInventoryItemData = req.body;
+
+    // Update the inventory item in the database
+    const db = initDb.getDb().db(database);
+    const inventoryItem = await db.collection(collection).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updatedInventoryItemData },
+      { returnOriginal: false }
+    );
+
+    if (!inventoryItem.value) {
+      return res.status(404).json({ error: 'Inventory item not found.' });
+    }
+
+    // If the inventory item is updated successfully, send it as a JSON response with a 200 status message
+    res.status(200).json(inventoryItem.value);
+  } catch (error) {
+    // If any error occurs during the process, send a generic server error response
+    res.status(500).json({ error: 'Failed to update inventory item.' });
+  }
+};
 
 module.exports = {
   createInventoryItem,
   getAllInventoryItems,
   getInventoryItemById,
-  deleteInventoryItem
+  deleteInventoryItem,
+  updateInventoryItem
 };
