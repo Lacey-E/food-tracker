@@ -1,21 +1,3 @@
-// const express = require('express');
-// const router = express.Router();
-// const dataController = require('../controllers/randomiz');
-
-// // Generate user profiles
-// router.post('/user-profiles', dataController.generateUserProfiles);
-
-// // Generate shopping lists
-// router.post('/shopping-lists', dataController.generateShoppingLists);
-
-// // Generate inventory items
-// router.post('/inventory-items', dataController.generateInventoryItems);
-
-// // Generate recipes
-// router.post('/recipes', dataController.generateRecipes);
-
-// module.exports = router;
-
 const express = require('express');
 const router = express.Router();
 const dataController = require('../controllers/randomiz');

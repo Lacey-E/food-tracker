@@ -4,10 +4,14 @@ const { ObjectId } = require('mongoose').Types;
 const collection = 'inventory_collection';
 const database = 'food-tracker';
 
-// Create an inventory item
 const createInventoryItem = async (req, res) => {
   try {
     const inventoryItemData = req.body;
+
+    // Check if the required data is provided
+    if (!inventoryItemData || !inventoryItemData.name || !inventoryItemData.quantity || !inventoryItemData.unit) {
+      return res.status(400).json({ error: 'Invalid inventory item data.' });
+    }
 
     // Create a new instance of the InventoryItem model with the provided data
     const inventoryItem = new InventoryItem(inventoryItemData);
@@ -28,7 +32,6 @@ const createInventoryItem = async (req, res) => {
   }
 };
 
-// Get all inventory items
 const getAllInventoryItems = async (req, res) => {
   try {
     // Access the database using the custom method
@@ -45,7 +48,6 @@ const getAllInventoryItems = async (req, res) => {
   }
 };
 
-// Get a single inventory item by ID
 const getInventoryItemById = async (req, res) => {
   const { id } = req.params;
   try {
