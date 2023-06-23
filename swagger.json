@@ -1,13 +1,14 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Food tracker API",
-    "description": "Group work API",
+    "title": "FoodTrack API",
+    "description": "API documentation for the FoodTrack web application",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
+    "https",
     "http"
   ],
   "paths": {
