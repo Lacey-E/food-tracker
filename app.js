@@ -4,11 +4,16 @@ const bodyParser = require('body-parser'); // Middleware for parsing request bod
 const { initDb } = require('./config/db.config')
 const app = express();
 const PORT = process.env.PORT || 3000; // Use the environment variable PORT if available, or default to port 3000
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+const cors = require('cors');
 
 // Middleware
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+   .use(bodyParser.json()) // Parse JSON bodies
+   .use(cors())
+   .use(express.json())
+   .use(express.urlencoded({ extended: true })) // Parse URL-encoded bodies
 
 app.use((req, res, next) => {
     // Set response headers to allow cross-origin resource sharing (CORS)
