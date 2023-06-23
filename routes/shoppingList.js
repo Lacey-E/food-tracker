@@ -14,7 +14,8 @@ router.post('/', shopController.createShoppingList);
 //Delete Shopping List by ID
 router.delete('/:id', shopController.deleteShoppingList);
 
-
+// Update a shopping list by ID
+router.put('/:id', shopController.putShoppingList);
 
 
 module.exports = router;
