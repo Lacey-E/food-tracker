@@ -1,13 +1,18 @@
 const ShoppingList = require('../models/shoppingListModel');
-const initDb = require('../config/db.config');
+const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
-const collection = 'shopping_list';
+const collection = 'shopping_lists';
 const database = 'food-tracker';
 
 // Create a shopping list
 const createShoppingList = async (req, res) => {
   try {
     const shoppingListData = req.body;
+
+    // Check if the required data is provided
+    if (!shoppingListData || !shoppingListData.name || !shoppingListData.items) {
+      return res.status(400).json({ error: 'Invalid shopping list data.' });
+    }
 
     // Create a new instance of the ShoppingList model with the provided data
     const shoppingList = new ShoppingList(shoppingListData);

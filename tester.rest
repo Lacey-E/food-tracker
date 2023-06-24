@@ -1,0 +1,44 @@
+// CREATE A RANDOM DATA
+POST http://localhost:8000/dataGenerator/userProfiles 
+Content-Type: application/json
+
+{
+  "numProfiles": 1
+} 
+### Creat random custom recipes
+POST http://localhost:8000/dataGenerator/recipes
+Content-Type: application/json
+
+{
+  "numRecipes": 1
+} 
+### Create random inventory list
+POST http://localhost:8000/dataGenerator/inventoryItems
+Content-Type: application/json
+
+{
+  "numItems": 1
+} 
+### Create random shopping list
+POST http://localhost:8000/dataGenerator/shoppingLists
+Content-Type: application/json
+
+{
+  "numLists": 1
+} 
+### Get all users
+GET http://localhost:8000/users
+### Get user by ID
+GET http://localhost:8000/users/6492d884bb86057a33b241a9
+### Get all inventory list
+GET http://localhost:8000/inventory
+### Get inventory by ID
+GET http://localhost:8000/inventory/649337cd6ddede41f38eb6cc
+### Get all recipe
+GET http://localhost:8000/recipes
+### Get recipe by ID
+GET http://localhost:8000/recipes/649337cd6ddede41f38eb6cc
+### Get all shopping list
+GET http://localhost:8000/shoppingList
+### Get all shopping list by ID
+GET http://localhost:8000/shoppingList/649337fe6ddede41f38eb6db
