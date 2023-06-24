@@ -1,9 +1,9 @@
 const express = require('express'); // Framework for building web applications
 const bodyParser = require('body-parser'); // Middleware for parsing request bodies
 // const mongoose = require('mongoose'); // MongoDB object modeling tool
-const { initDb } = require('./config/db.config')
+const { initDb } = require('./config/db')
 const app = express();
-const PORT = process.env.PORT || 3000; // Use the environment variable PORT if available, or default to port 3000
+const PORT = process.env.PORT || 8000; // Use the environment variable PORT if available, or default to port 3000
 
 // Middleware
 app.use(bodyParser.json()); // Parse JSON bodies

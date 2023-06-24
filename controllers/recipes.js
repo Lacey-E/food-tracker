@@ -1,13 +1,17 @@
 const Recipe = require('../models/recipeModel');
-const initDb = require('../config/db.config');
+const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
-const collection = 'recipes';
+const collection = 'recipe_collection';
 const database = 'food-tracker';
 
-// Create a recipe
 const createRecipe = async (req, res) => {
   try {
     const recipeData = req.body;
+
+    // Check if the required data is provided
+    if (!recipeData || !recipeData.name || !recipeData.ingredients || !recipeData.instructions) {
+      return res.status(400).json({ error: 'Invalid recipe data.' });
+    }
 
     // Create a new instance of the Recipe model with the provided data
     const recipe = new Recipe(recipeData);
@@ -28,7 +32,6 @@ const createRecipe = async (req, res) => {
   }
 };
 
-// Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
     // Access the database using the custom method
@@ -45,7 +48,6 @@ const getAllRecipes = async (req, res) => {
   }
 };
 
-// Get a single recipe by ID
 const getRecipeById = async (req, res) => {
   const { id } = req.params;
   try {
