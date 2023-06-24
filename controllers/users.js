@@ -41,7 +41,7 @@ const getAllUserProfiles = async (req, res) => {
     const userProfiles = await db.collection(collection).find().toArray();
 
     // Send the retrieved user profiles as a JSON response
-    res.json(userProfiles);
+    res.status(201).json(userProfiles);
   } catch (error) {
     // Handle errors and send an appropriate error response
     res.status(500).json({ error: 'Failed to fetch user profiles.' });
@@ -55,8 +55,18 @@ const getUserProfileById = async (req, res) => {
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid user profile ID.' });
     }
+
+    const db = initDb.getDb().db(database);
+    const userProfile = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+
+    if(!userProfile) {
+      return res.status(404).json({ error: 'User profile not found.' });
+    }
+
+    //if the user profile is found, send it as a JSON response with a 200 status message
+    res.status(200).json(userProfile);
   }catch (error) {
-    
+    //if any error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to delete User.' });
   }
 };
