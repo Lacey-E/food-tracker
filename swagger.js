@@ -5,7 +5,7 @@ const doc = {
     title: 'FoodTrack API',
     description: 'API documentation for the FoodTrack web application',
   },
-  host: 'localhost:3000',
+  host: 'localhost:8000',
   schemes: ['https', 'http'],
 };
 
