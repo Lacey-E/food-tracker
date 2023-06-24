@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+router.use('/', require('./swagger'));
 router.use('/user', require('./users'));
 
 // Include the 'inventory' router for handling inventory-related routes
