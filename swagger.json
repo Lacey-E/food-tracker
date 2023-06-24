@@ -5,7 +5,7 @@
     "description": "API documentation for the FoodTrack web application",
     "version": "1.0.0"
   },
-  "host": "localhost:3000",
+  "host": "https://food-tracker-v22e.onrender.com",
   "basePath": "/",
   "tags": [
     {
