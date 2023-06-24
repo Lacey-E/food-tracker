@@ -55,7 +55,11 @@ const getUserProfileById = async (req, res) => {
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid user profile ID.' });
     }
-  };
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete User.' });
+  }
+};
 
 
   //Delete an User  by id
