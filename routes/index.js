@@ -10,10 +10,6 @@ router.use('/inventory', require('./inventory'));
 // Include the 'recipes' router for handling recipe-related routes
 router.use('/recipes', require('./recipes'));
 
-// Include the 'shoppingList' router for handling shopping list-related routes
-router.use('/shoppingList', require('./shoppingList'));
-
-// Include the 'dataGenerator' router for handling data generation routes
-router.use('/dataGenerator', require('./dataGenerator'));
+router.use('/list', require('./shoppingList'));
 
 module.exports = router;

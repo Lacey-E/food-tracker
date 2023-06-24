@@ -55,21 +55,74 @@ const getUserProfileById = async (req, res) => {
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid user profile ID.' });
     }
+  };
 
-    // Fetch a specific user profile by ID from the database
+
+  //Delete an User  by id
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Validate Id
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Recipe Id' });
+    }
+
+    // Delete a specific User by ID from the database
     const db = initDb.getDb().db(database);
-    const userProfile = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
 
-    if (!userProfile) {
+    console.log(response);
+    if (response.deletedCount > 0) {
+      res.status(200).json(response) + 'deleted';
+    } else {
+      res.status(500).json('Some error occurred while deleting the User.');
+    }
+
+  }catch (error) {
+    
+    res.status(500).json({ error: 'Failed to delete User.' });
+  }
+  
+};
+  
+
+// PUT /user-profiles/:id
+const updateUserProfile = async (req, res) => {
+  const { id } = req.params;
+  const updatedUserProfileData = req.body;
+
+  try {
+    // Validate the provided ID as a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid user profile ID.' });
+    }
+
+    // Update the user profile in the database
+    const db = initDb.getDb().db(database);
+    const updatedUserProfile = await db.collection(collection).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updatedUserProfileData },
+      { returnOriginal: false }
+    );
+
+    if (!updatedUserProfile.value) {
       return res.status(404).json({ error: 'User profile not found.' });
     }
 
-    // If the user profile is found, send it as a JSON response with a 200 status message
-    res.status(200).json(userProfile);
+    // If the user profile is updated successfully, send it as a JSON response with a 200 status code
+    res.status(200).json(updatedUserProfile.value);
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
-    res.status(500).json({ error: 'Failed to fetch user profile.' });
+    res.status(500).json({ error: 'Failed to update user profile.' });
   }
 };
 
-module.exports = { createUserProfile, getAllUserProfiles, getUserProfileById };
+
+
+module.exports = {
+  createUserProfile,
+  getAllUserProfiles,
+  getUserProfileById,
+  deleteUser,
+  updateUserProfile
+};
