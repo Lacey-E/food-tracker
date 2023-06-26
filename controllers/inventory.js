@@ -1,4 +1,4 @@
-const InventoryItem = require('../models/inventoryModel');
+const InventoryItem = require('../models');
 const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
 const collection = 'inventory_items';
