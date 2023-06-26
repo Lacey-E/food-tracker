@@ -1,4 +1,4 @@
-const UserProfile = require('../models/userModel');
+const UserProfile = require('../models');
 const initDb = require('../config/db');
 const { ObjectId } = require('mongodb');
 const collection = 'user_registry';
@@ -17,14 +17,23 @@ const createUserProfile = async (req, res) => {
     const userProfile = new UserProfile(userProfileData);
 
     // Save the new user profile to the database using insertOne
-    const createdUserProfile = await initDb.getDb().db(database).collection(collection).insertOne(userProfile);
+    const createdUserProfile = await initDb
+      .getDb()
+      .db(database)
+      .collection(collection)
+      .insertOne(userProfile);
 
     if (createdUserProfile.acknowledged) {
       // If the user profile creation is successful, send the created user profile as a JSON response with a status code of 201
       res.status(201).json(createdUserProfile);
     } else {
       // If the user profile creation is not acknowledged, handle the error and send an appropriate error response
-      res.status(500).json(createdUserProfile.error || 'Some error occurred while creating the user.');
+      res
+        .status(500)
+        .json(
+          createdUserProfile.error ||
+            'Some error occurred while creating the user.'
+        );
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
@@ -44,6 +53,7 @@ const getAllUserProfiles = async (req, res) => {
     res.status(201).json(userProfiles);
   } catch (error) {
     // Handle errors and send an appropriate error response
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch user profiles.' });
   }
 };
@@ -57,22 +67,23 @@ const getUserProfileById = async (req, res) => {
     }
 
     const db = initDb.getDb().db(database);
-    const userProfile = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const userProfile = await db
+      .collection(collection)
+      .findOne({ _id: new ObjectId(id) });
 
-    if(!userProfile) {
+    if (!userProfile) {
       return res.status(404).json({ error: 'User profile not found.' });
     }
 
     //if the user profile is found, send it as a JSON response with a 200 status message
     res.status(200).json(userProfile);
-  }catch (error) {
+  } catch (error) {
     //if any error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to delete User.' });
   }
 };
 
-
-  //Delete an User  by id
+//Delete an User  by id
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -83,7 +94,9 @@ const deleteUser = async (req, res) => {
 
     // Delete a specific User by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+    const inventoryItem = await db
+      .collection(collection)
+      .deleteOne({ _id: new ObjectId(id) }, true);
 
     console.log(response);
     if (response.deletedCount > 0) {
@@ -91,14 +104,10 @@ const deleteUser = async (req, res) => {
     } else {
       res.status(500).json('Some error occurred while deleting the User.');
     }
-
-  }catch (error) {
-    
+  } catch (error) {
     res.status(500).json({ error: 'Failed to delete User.' });
   }
-  
 };
-  
 
 // PUT /user-profiles/:id
 const updateUserProfile = async (req, res) => {
@@ -113,11 +122,13 @@ const updateUserProfile = async (req, res) => {
 
     // Update the user profile in the database
     const db = initDb.getDb().db(database);
-    const updatedUserProfile = await db.collection(collection).findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: updatedUserProfileData },
-      { returnOriginal: false }
-    );
+    const updatedUserProfile = await db
+      .collection(collection)
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: updatedUserProfileData },
+        { returnOriginal: false }
+      );
 
     if (!updatedUserProfile.value) {
       return res.status(404).json({ error: 'User profile not found.' });
@@ -131,12 +142,10 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   createUserProfile,
   getAllUserProfiles,
   getUserProfileById,
   deleteUser,
-  updateUserProfile
+  updateUserProfile,
 };

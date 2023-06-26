@@ -1,7 +1,7 @@
-const ShoppingList = require('../models/shoppingListModel');
+const ShoppingList = require('../models');
 const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
-const collection = 'shopping_lists';
+const collection = 'shopping_list';
 const database = 'food-tracker';
 
 // Create a shopping list

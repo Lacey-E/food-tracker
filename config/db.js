@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { MongoClient } = require('mongodb');
+const MongoClient = require('mongodb').MongoClient;
 
 const uri = process.env.MONGODB_URI;
 
@@ -18,9 +18,9 @@ const initDb = (callback) => {
     return callback('Missing environment variable MONGODB_URI');
   }
 
-  MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
+  MongoClient.connect(uri)
     .then((client) => {
-      _db = client; // Access the database using the `db()` method
+      _db = client;
       callback(null, _db);
     })
     .catch((err) => {
@@ -38,5 +38,5 @@ const getDb = () => {
 
 module.exports = {
   initDb,
-  getDb
+  getDb,
 };

@@ -186,7 +186,7 @@
         }
       }
     },
-    "/inventory-items": {
+    "/inventory": {
       "get": {
         "tags": [
           "Inventory Items"
@@ -436,7 +436,7 @@
         }
       }
     },
-    "/shopping-list": {
+    "/shoppingList": {
       "get": {
         "tags": [
           "Shopping List"
