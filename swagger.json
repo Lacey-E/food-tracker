@@ -236,6 +236,34 @@
             "description": "Internal Server Error"
           }
         }
+      }
+    },
+    "/inventory/{inventoryId}": {
+      "get": {
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Get inventory by ID",
+        "description": "Retrieve an Inventory Item's information by their ID.",
+        "parameters": [
+          {
+            "name": "inventoryId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       },
       "put": {
         "tags": [
@@ -361,6 +389,34 @@
             "description": "Internal Server Error"
           }
         }
+      }
+    },
+    "/recipes/{recipeId}": {
+      "get": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Get recipe by ID",
+        "description": "Retrieve a recipes's information by their ID.",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       },
       "put": {
         "tags": [
@@ -481,6 +537,34 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/shoppingList/{shoppingListId}": {
+      "get": {
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Get Shopping List by ID",
+        "description": "Retrieve a Shopping List's information by their ID.",
+        "parameters": [
+          {
+            "name": "shoppingListId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
