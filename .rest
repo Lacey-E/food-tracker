@@ -1,1 +1,28 @@
-GET http://localhost:8000/list
+GET http://localhost:8000/inventory
+
+###
+POST http://localhost:8000/inventory
+Content-Type: application/json
+
+ {
+    "name": "Banner",
+    "quantity": 20,
+    "expirationDate": "07-01-2023",
+    "owner": "6499c37391a3be7f6fe09fa1"
+
+  }
+
+###
+PUT http://localhost:8000/inventory/649df88c40dfd5ee1be51257
+Content-Type: application/json
+
+  {
+    "name": "Banner",
+    "quantity": 20,
+    "expirationDate": "07-01-2023",
+    "owner": "James"
+
+  }
+
+###
+DELETE http://localhost:8000/inventory/649df88c40dfd5ee1be51257 HTTP/1.1
