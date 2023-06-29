@@ -1,4 +1,4 @@
-const ShoppingList = require('../models');
+const ShoppingList = require('../models/shoppingListModel');
 const initDb = require('../config/db');
 const { ObjectId } = require('mongoose').Types;
 const collection = 'shopping_list';
@@ -9,27 +9,30 @@ const createShoppingList = async (req, res) => {
   try {
     const shoppingListData = req.body;
 
-    // Check if the required data is provided
-    if (!shoppingListData || !shoppingListData.name || !shoppingListData.items) {
-      return res.status(400).json({ error: 'Invalid shopping list data.' });
-    }
-
     // Create a new instance of the ShoppingList model with the provided data
     const shoppingList = new ShoppingList(shoppingListData);
 
     // Save the new shopping list to the database using insertOne
-    const createdShoppingList = await initDb.getDb().db(database).collection(collection).insertOne(shoppingList);
+    const response = await initDb
+      .getDb()
+      .db(database)
+      .collection(collection)
+      .insertOne(shoppingList);
 
-    if (createdShoppingList.acknowledged) {
+    if (response.acknowledged) {
       // If the shopping list creation is successful, send the created shopping list as a JSON response with a status code of 201
-      res.status(201).json(createdShoppingList);
+      res.status(201).json(response);
     } else {
       // If the shopping list creation is not acknowledged, handle the error and send an appropriate error response
-      res.status(500).json(createdShoppingList.error || 'Some error occurred while creating the shopping list.');
+      res
+        .status(500)
+        .json({
+          error: 'Some error occurred while creating the shopping list.',
+        });
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -61,7 +64,9 @@ const getShoppingListById = async (req, res) => {
 
     // Fetch a specific shopping list by ID from the database
     const db = initDb.getDb().db(database);
-    const shoppingList = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const shoppingList = await db
+      .collection(collection)
+      .findOne({ _id: new ObjectId(id) });
 
     if (!shoppingList) {
       return res.status(404).json({ error: 'Shopping list not found.' });
@@ -75,34 +80,31 @@ const getShoppingListById = async (req, res) => {
   }
 };
 
-
-//Delete an ShoppingList item by id
+// Delete a shopping list by ID
 const deleteShoppingList = async (req, res) => {
   const { id } = req.params;
   try {
-    // Validate Id
+    // Validate the provided ID as a valid ObjectId
     if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid Shopping List Id' });
+      return res.status(400).json({ error: 'Invalid shopping list ID.' });
     }
 
-    // Delete a specific recipe by ID from the database
+    // Delete a specific shopping list by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+    const deletionResult = await db
+      .collection(collection)
+      .deleteOne({ _id: new ObjectId(id) });
 
-    console.log(response);
-    if (response.deletedCount > 0) {
-      res.status(200).json(response) + 'deleted';
+    if (deletionResult.deletedCount > 0) {
+      res.status(200).json({ message: 'Shopping list deleted successfully.' });
     } else {
-      res.status(500).json('Some error occurred while deleting the Shopping List');
+      res.status(404).json({ error: 'Shopping list not found.' });
     }
-
-  }catch (error) {
-    
-    res.status(500).json({ error: 'Failed to delete List' });
+  } catch (error) {
+    // If any error occurs during the process, send a generic server error response
+    res.status(500).json({ error: 'Failed to delete shopping list.' });
   }
-  
 };
-
 
 // Update a shopping list
 const putShoppingList = async (req, res) => {
@@ -117,18 +119,19 @@ const putShoppingList = async (req, res) => {
 
     // Update the shopping list in the database
     const db = initDb.getDb().db(database);
-    const updatedShoppingList = await db.collection(collection).findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: shoppingListData },
-      { returnOriginal: false }
-    );
+    const updatedShoppingList = await db
+      .collection(collection)
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: shoppingListData },
+        { returnOriginal: false }
+      );
 
-    if (!updatedShoppingList.value) {
-      return res.status(404).json({ error: 'Shopping list not found.' });
+    if (updatedShoppingList.value) {
+      res.status(200).json(updatedShoppingList.value);
+    } else {
+      res.status(404).json({ error: 'Shopping list not found.' });
     }
-
-    // If the shopping list is successfully updated, send it as a JSON response with a 200 status message
-    res.status(200).json(updatedShoppingList.value);
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to update shopping list.' });
@@ -140,5 +143,5 @@ module.exports = {
   getAllShoppingLists,
   getShoppingListById,
   deleteShoppingList,
-  putShoppingList
+  putShoppingList,
 };

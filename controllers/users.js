@@ -1,5 +1,6 @@
-const UserProfile = require('../models');
+const UserProfile = require('../models/userModel');
 const initDb = require('../config/db');
+const passwordUtil = require('../middlewares/passwordUtil');
 const { ObjectId } = require('mongodb');
 const collection = 'user_registry';
 const database = 'food-tracker';
@@ -8,36 +9,35 @@ const createUserProfile = async (req, res) => {
   try {
     const userProfileData = req.body;
 
-    // Check if the required data is provided
-    if (!userProfileData || !userProfileData.name || !userProfileData.email) {
-      return res.status(400).json({ error: 'Invalid user profile data.' });
+    // Validate password
+    const passwordCheck = passwordUtil.passwordPass(userProfileData.password);
+    if (passwordCheck.error) {
+      return res.status(400).json({ error: passwordCheck.error });
     }
 
     // Create a new instance of the UserProfile model with the provided data
     const userProfile = new UserProfile(userProfileData);
 
     // Save the new user profile to the database using insertOne
-    const createdUserProfile = await initDb
+    const response = await initDb
       .getDb()
       .db(database)
       .collection(collection)
       .insertOne(userProfile);
 
-    if (createdUserProfile.acknowledged) {
+    if (response.acknowledged) {
       // If the user profile creation is successful, send the created user profile as a JSON response with a status code of 201
-      res.status(201).json(createdUserProfile);
+      res.status(201).json(response);
     } else {
       // If the user profile creation is not acknowledged, handle the error and send an appropriate error response
       res
         .status(500)
-        .json(
-          createdUserProfile.error ||
-            'Some error occurred while creating the user.'
-        );
+        .json(response.error || 'Some error occurred while creating the user.');
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ message: 'Server error' });
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -50,7 +50,7 @@ const getAllUserProfiles = async (req, res) => {
     const userProfiles = await db.collection(collection).find().toArray();
 
     // Send the retrieved user profiles as a JSON response
-    res.status(201).json(userProfiles);
+    res.status(200).json(userProfiles);
   } catch (error) {
     // Handle errors and send an appropriate error response
     console.error(error);
@@ -75,41 +75,42 @@ const getUserProfileById = async (req, res) => {
       return res.status(404).json({ error: 'User profile not found.' });
     }
 
-    //if the user profile is found, send it as a JSON response with a 200 status message
+    // If the user profile is found, send it as a JSON response with a 200 status message
     res.status(200).json(userProfile);
   } catch (error) {
-    //if any error occurs during the process, send a generic server error response
-    res.status(500).json({ error: 'Failed to delete User.' });
+    // If any error occurs during the process, send a generic server error response
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch user profile.' });
   }
 };
 
-//Delete an User  by id
 const deleteUser = async (req, res) => {
-  const { id } = req.params;
   try {
+    const userId = new ObjectId(req.params.id);
+
     // Validate Id
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid Recipe Id' });
+    if (!ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid User ID' });
     }
 
     // Delete a specific User by ID from the database
-    const db = initDb.getDb().db(database);
-    const inventoryItem = await db
+    const response = await initDb
+      .getDb()
+      .db(database)
       .collection(collection)
-      .deleteOne({ _id: new ObjectId(id) }, true);
+      .deleteOne({ _id: userId });
 
-    console.log(response);
     if (response.deletedCount > 0) {
-      res.status(200).json(response) + 'deleted';
+      res.status(200).json({ message: 'User deleted successfully.' });
     } else {
-      res.status(500).json('Some error occurred while deleting the User.');
+      res.status(404).json({ error: 'User not found.' });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to delete User.' });
   }
 };
 
-// PUT /user-profiles/:id
 const updateUserProfile = async (req, res) => {
   const { id } = req.params;
   const updatedUserProfileData = req.body;
@@ -118,6 +119,14 @@ const updateUserProfile = async (req, res) => {
     // Validate the provided ID as a valid ObjectId
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid user profile ID.' });
+    }
+
+    // Validate password
+    const passwordCheck = passwordUtil.passwordPass(
+      updatedUserProfileData.password
+    );
+    if (passwordCheck.error) {
+      return res.status(400).json({ error: passwordCheck.error });
     }
 
     // Update the user profile in the database
@@ -135,9 +144,13 @@ const updateUserProfile = async (req, res) => {
     }
 
     // If the user profile is updated successfully, send it as a JSON response with a 200 status code
-    res.status(200).json(updatedUserProfile.value);
+    res.status(200).json({
+      message: 'User profile updated successfully.',
+      userProfile: updatedUserProfile.value,
+    });
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
+    console.error(error);
     res.status(500).json({ error: 'Failed to update user profile.' });
   }
 };
