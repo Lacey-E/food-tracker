@@ -12,4 +12,5 @@ router.use('/recipes', require('./recipes'));
 
 router.use('/shoppingList', require('./shoppingList'));
 
+router.use('/auth', require('./oauth'));
 module.exports = router;
