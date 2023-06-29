@@ -29,7 +29,7 @@ const createUserProfile = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: 'Username already taken.' });
     }
-    
+
     // Save the new user profile to the database using insertOne
     const createdUserProfile = await initDb
       .getDb()
@@ -50,46 +50,46 @@ const createUserProfile = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
+// const login = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
 
-    // Find the user by username
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid username or password' });
-    }
+//     // Find the user by username
+//     const user = await User.findOne({ username });
+//     if (!user) {
+//       return res.status(401).json({ error: 'Invalid username or password' });
+//     }
 
-    // Compare the provided password with the hashed password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid username or password' });
-    }
+//     // Compare the provided password with the hashed password
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) {
+//       return res.status(401).json({ error: 'Invalid username or password' });
+//     }
 
-    // Generate a JWT
-    const token = jwt.sign({ userId: user._id }, secretKey);
+//     // Generate a JWT
+//     const token = jwt.sign({ userId: user._id }, secretKey);
 
-    // Send the token as a response
-    res.json({ token });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to login' });
-  }
-};
+//     // Send the token as a response
+//     res.json({ token });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to login' });
+//   }
+// };
 
-const logout = async (_, res) => {
-  try {
+// const logout = async (_, res) => {
+//   try {
 
-    if (!req.user) {
-      return "Already logged out";
-    }
+//     if (!req.user) {
+//       return "Already logged out";
+//     }
 
-    // Clear the session data
-    req.session.destroy();
-    res.json({ message: 'Logged out successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to logout' });
-  }
-};
+//     // Clear the session data
+//     req.session.destroy();
+//     res.json({ message: 'Logged out successfully' });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to logout' });
+//   }
+// };
 
 
 // Get all user profiles
@@ -208,8 +208,8 @@ const updateUserProfile = async (req, res) => {
 
 module.exports = {
   createUserProfile,
-  login,
-  logout,
+  // login,
+  // logout,
   getAllUserProfiles,
   getUserProfileById,
   deleteUser,
