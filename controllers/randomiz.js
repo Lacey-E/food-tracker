@@ -69,7 +69,7 @@ const generateInventoryItems = async (numItems) => {
                 // Add any additional fields as per your model
             };
 
-            const response = await insertDocument('inventory_collection', inventoryItemData);
+            const response = await insertDocument('inventory_items', inventoryItemData);
             console.log('Inserted inventory item:', response);
             inventoryItems.push(response.documentId);
         }
@@ -114,7 +114,7 @@ const generateRecipes = async (numRecipes) => {
                 recipeData.ingredients.push(ingredient.documentId);
             }
 
-            const response = await insertDocument('recipe_collection', recipeData);
+            const response = await insertDocument('recipes', recipeData);
             console.log('Inserted recipe:', response);
             recipes.push(response.documentId);
         }
@@ -157,7 +157,7 @@ const generateShoppingLists = async (numLists) => {
                 shoppingListData.items.push(item.documentId);
             }
 
-            const response = await insertDocument('shopping_list_collection', shoppingListData);
+            const response = await insertDocument('shopping_list', shoppingListData);
             console.log('Inserted shopping list:', response);
             shoppingLists.push(response.documentId);
         }

@@ -12,6 +12,8 @@ router.use('/recipes', require('./recipes'));
 
 router.use('/shoppingList', require('./shoppingList'));
 
+router.use('/dataGenerator', require('./dataGenerator'))
+
 // Include the 'swagger' router for handling the swagger documentation
 router.use('/', require('./swagger'))
 

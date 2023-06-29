@@ -4,6 +4,7 @@ const { ObjectId } = require('mongoose').Types;
 const collection = 'inventory_items';
 const database = 'food-tracker';
 
+// Create a new inventory item
 const createInventoryItem = async (req, res) => {
   try {
     const inventoryItemData = req.body;
@@ -15,6 +16,13 @@ const createInventoryItem = async (req, res) => {
 
     // Create a new instance of the InventoryItem model with the provided data
     const inventoryItem = new InventoryItem(inventoryItemData);
+
+    // Validate the inventory item data
+    const validationError = inventoryItem.validateSync();
+    if (validationError) {
+      // If validation fails, send an error response with the validation error messages
+      return res.status(400).json({ error: validationError.message });
+    }
 
     // Save the new inventory item to the database using insertOne
     const createdInventoryItem = await initDb.getDb().db(database).collection(collection).insertOne(inventoryItem);
@@ -28,10 +36,11 @@ const createInventoryItem = async (req, res) => {
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Failed to create inventory item.' });
   }
 };
 
+// Get all inventory items
 const getAllInventoryItems = async (req, res) => {
   try {
     // Access the database using the custom method
@@ -48,6 +57,7 @@ const getAllInventoryItems = async (req, res) => {
   }
 };
 
+// Get an inventory item by ID
 const getInventoryItemById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -72,34 +82,31 @@ const getInventoryItemById = async (req, res) => {
   }
 };
 
-
-//Delete an inventory item by id
+// Delete an inventory item by ID
 const deleteInventoryItem = async (req, res) => {
   const { id } = req.params;
   try {
-    // Validate Id
+    // Validate the provided ID as a valid ObjectId
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid inventory item ID.' });
     }
 
     // Delete a specific inventory item by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+    const response = await db.collection(collection).deleteOne({ _id: new ObjectId(id) });
 
-    console.log(response);
     if (response.deletedCount > 0) {
-      res.status(200).json(response) + 'deleted';
+      // If the inventory item is deleted successfully, send a success message with a status code of 200
+      res.status(200).json({ message: 'Inventory item deleted successfully.' });
     } else {
-      res.status(500).json('Some error occurred while deleting the Inventory item.');
+      // If the inventory item is not found, send an appropriate error response
+      res.status(404).json({ error: 'Inventory item not found.' });
     }
-
-  }catch (error) {
-    
+  } catch (error) {
+    // If any error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to delete inventory item.' });
   }
-  
 };
-
 
 // Update an inventory item by ID
 const updateInventoryItem = async (req, res) => {
@@ -111,6 +118,11 @@ const updateInventoryItem = async (req, res) => {
     }
 
     const updatedInventoryItemData = req.body;
+
+    // Check if the required data is provided
+    if (!updatedInventoryItemData || !updatedInventoryItemData.name || !updatedInventoryItemData.quantity || !updatedInventoryItemData.unit) {
+      return res.status(400).json({ error: 'Invalid inventory item data.' });
+    }
 
     // Update the inventory item in the database
     const db = initDb.getDb().db(database);
