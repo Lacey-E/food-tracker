@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "start": "nodemon app.js",
     "dev": "nodemon app.js",
     "swagger": "node ./swagger.js"
@@ -21,7 +22,9 @@
     "validator": "^13.9.0"
   },
   "devDependencies": {
+    "jest": "^29.5.0",
     "nodemon": "^1.14.9",
+    "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.2"
   }
 }
