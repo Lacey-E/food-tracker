@@ -12,7 +12,6 @@ const inventoryItemSchema = new mongoose.Schema({
     },
   },
   expirationDate: { type: Date },
-  // additional relevant attributes
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'UserProfile' },
 });
 

@@ -1,5 +1,6 @@
-const UserProfile = require('../models');
+const UserProfile = require('../models/userModel');
 const initDb = require('../config/db');
+const passwordUtil = require('../middlewares/passwordUtil');
 const { ObjectId } = require('mongodb');
 const collection = 'user_registry';
 const database = 'food-tracker';
@@ -9,9 +10,10 @@ const createUserProfile = async (req, res) => {
   try {
     const userProfileData = req.body;
 
-    // Check if the required data is provided
-    if (!userProfileData || !userProfileData.name || !userProfileData.email) {
-      return res.status(400).json({ error: 'Invalid user profile data.' });
+    // Validate password
+    const passwordCheck = passwordUtil.passwordPass(userProfileData.password);
+    if (passwordCheck.error) {
+      return res.status(400).json({ error: passwordCheck.error });
     }
 
     // Create a new instance of the UserProfile model with the provided data
@@ -31,22 +33,27 @@ const createUserProfile = async (req, res) => {
     }
 
     // Save the new user profile to the database using insertOne
-    const createdUserProfile = await initDb
+    const response = await initDb
       .getDb()
       .db(database)
       .collection(collection)
       .insertOne(userProfile);
 
-    if (createdUserProfile.acknowledged) {
+    if (response.acknowledged) {
       // If the user profile creation is successful, send the created user profile as a JSON response with a status code of 201
-      res.status(201).json(createdUserProfile);
+      res.status(201).json(response);
     } else {
       // If the user profile creation is not acknowledged, handle the error and send an appropriate error response
       throw new Error('Some error occurred while creating the user.');
+      res
+        .status(500)
+        .json(response.error || 'Some error occurred while creating the user.');
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to create user profile.' });
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -101,7 +108,7 @@ const getAllUserProfiles = async (req, res) => {
     // Fetch all user profiles from the collection and convert the result to an array
     const userProfiles = await db.collection(collection).find().toArray();
 
-    // Send the retrieved user profiles as a JSON response with a status code of 200
+    // Send the retrieved user profiles as a JSON response
     res.status(200).json(userProfiles);
   } catch (error) {
     // Handle errors and send an appropriate error response
@@ -133,16 +140,19 @@ const getUserProfileById = async (req, res) => {
     }
 
     // If the user profile is found, send it as a JSON response with a status code of 200
+    // If the user profile is found, send it as a JSON response with a 200 status message
     res.status(200).json(userProfile);
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to retrieve user profile.' });
+    // If any error occurs during the process, send a generic server error response
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch user profile.' });
   }
 };
 
 // Delete a user profile by ID
 const deleteUser = async (req, res) => {
-  const { id } = req.params;
   try {
     // Validate the provided ID as a valid ObjectId
     if (!ObjectId.isValid(id)) {
@@ -182,6 +192,15 @@ const updateUserProfile = async (req, res) => {
     }
 
     // Access the database using the custom method
+    // Validate password
+    const passwordCheck = passwordUtil.passwordPass(
+      updatedUserProfileData.password
+    );
+    if (passwordCheck.error) {
+      return res.status(400).json({ error: passwordCheck.error });
+    }
+
+    // Update the user profile in the database
     const db = initDb.getDb().db(database);
 
     // Update the user profile in the collection based on the ID
@@ -202,6 +221,7 @@ const updateUserProfile = async (req, res) => {
     res.status(200).json(updatedUserProfile.value);
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
+    console.error(error);
     res.status(500).json({ error: 'Failed to update user profile.' });
   }
 };

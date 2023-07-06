@@ -17,4 +17,5 @@ router.use('/dataGenerator', require('./dataGenerator'))
 // Include the 'swagger' router for handling the swagger documentation
 router.use('/', require('./swagger'))
 
+router.use('/auth', require('./oauth'));
 module.exports = router;
