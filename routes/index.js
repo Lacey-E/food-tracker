@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-// Include the 'users' router for handling user-related routes
-router.use('/users', require('./users'));
+router.use('/', require('./swagger'));
+router.use('/user', require('./users'));
 
 // Include the 'inventory' router for handling inventory-related routes
 router.use('/inventory', require('./inventory'));

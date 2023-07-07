@@ -1,21 +1,46 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "FoodTrack API",
     "description": "API documentation for the FoodTrack web application",
     "version": "1.0.0"
   },
+<<<<<<< HEAD
   "host": "food-tracker-app-60wj.onrender.com/",
+=======
+  "host": "https://food-tracker-v22e.onrender.com",
+>>>>>>> 788e2a4bcb117854ee0bbe4b569a325244866861
   "basePath": "/",
+  "tags": [
+    {
+      "name": "User Registry",
+      "description": "API endpoints for managing user registration and profile"
+    },
+    {
+      "name": "Inventory Items",
+      "description": "API endpoints for managing inventory items"
+    },
+    {
+      "name": "Recipes",
+      "description": "API endpoints for managing recipes"
+    },
+    {
+      "name": "Shopping List",
+      "description": "API endpoints for managing the shopping list"
+    }
+  ],
   "schemes": [
     "https",
     "http"
   ],
   "paths": {
-    "/user/": {
+    "/users": {
       "get": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Get all users",
+        "description": "Retrieve a list of all users.",
         "responses": {
           "200": {
             "description": "OK"
@@ -26,11 +51,37 @@
         }
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user with the provided information.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "John Doe"
+                },
+                "email": {
+                  "example": "john.doe@example.com"
+                },
+                "password": {
+                  "example": "********"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
@@ -38,12 +89,16 @@
         }
       }
     },
-    "/user/{id}": {
+    "/users/{userId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Get user by ID",
+        "description": "Retrieve a user's information by their ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -52,6 +107,50 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Update user",
+        "description": "Update user with the provided information.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "John Doe"
+                },
+                "email": {
+                  "example": "john.doe@example.com"
+                },
+                "password": {
+                  "example": "********"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -65,43 +164,22 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Delete user",
+        "description": "Delete user by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
@@ -112,10 +190,13 @@
         }
       }
     },
-    "/inventory/": {
+    "/inventory-items": {
       "get": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Get all inventory items",
+        "description": "Retrieve a list of all inventory items.",
         "responses": {
           "200": {
             "description": "OK"
@@ -126,32 +207,72 @@
         }
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Create a new inventory item",
+        "description": "Create a new inventory item with the provided information.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Apple"
+                },
+                "quantity": {
+                  "example": 10
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/inventory/{id}": {
-      "get": {
-        "description": "",
+      },
+      "put": {
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Update inventory item",
+        "description": "Update inventory item with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Apple"
+                },
+                "quantity": {
+                  "example": 20
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -165,43 +286,22 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Delete inventory item",
+        "description": "Delete an inventory item by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
@@ -212,10 +312,13 @@
         }
       }
     },
-    "/recipe/": {
+    "/recipes": {
       "get": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Get all recipes",
+        "description": "Retrieve a list of all recipes.",
         "responses": {
           "200": {
             "description": "OK"
@@ -226,32 +329,78 @@
         }
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Create a new recipe",
+        "description": "Create a new recipe with the provided information.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Apple Pie"
+                },
+                "ingredients": {
+                  "example": "Apple, sugar, flour, butter"
+                },
+                "instructions": {
+                  "example": "1. Peel and slice the apples..."
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/recipe/{id}": {
-      "get": {
-        "description": "",
+      },
+      "put": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Update recipe",
+        "description": "Update recipe with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Apple Pie"
+                },
+                "ingredients": {
+                  "example": "Apple, sugar, flour, butter"
+                },
+                "instructions": {
+                  "example": "1. Peel and slice the apples..."
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -265,43 +414,22 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Delete recipe",
+        "description": "Delete a recipe by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
@@ -312,10 +440,13 @@
         }
       }
     },
-    "/list/": {
+    "/shopping-list": {
       "get": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Get shopping list",
+        "description": "Retrieve the shopping list.",
         "responses": {
           "200": {
             "description": "OK"
@@ -326,32 +457,72 @@
         }
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Add item to shopping list",
+        "description": "Add an item to the shopping list.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "example": "Milk"
+                },
+                "quantity": {
+                  "example": 2
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "500": {
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/list/{id}": {
-      "get": {
-        "description": "",
+      },
+      "put": {
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Update shopping list item",
+        "description": "Update a shopping list item with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "example": "Milk"
+                },
+                "quantity": {
+                  "example": 3
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -365,43 +536,22 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Delete shopping list item",
+        "description": "Delete a shopping list item by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
