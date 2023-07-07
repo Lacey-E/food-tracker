@@ -8,27 +8,29 @@ const createInventoryItem = async (req, res) => {
   try {
     const inventoryItemData = req.body;
 
-    // Check if the required data is provided
-    if (!inventoryItemData || !inventoryItemData.name || !inventoryItemData.quantity || !inventoryItemData.unit) {
-      return res.status(400).json({ error: 'Invalid inventory item data.' });
-    }
-
     // Create a new instance of the InventoryItem model with the provided data
     const inventoryItem = new InventoryItem(inventoryItemData);
 
     // Save the new inventory item to the database using insertOne
-    const createdInventoryItem = await initDb.getDb().db(database).collection(collection).insertOne(inventoryItem);
+    const response= await initDb
+      .getDb()
+      .db(database)
+      .collection(collection)
+      .insertOne(inventoryItem);
 
-    if (createdInventoryItem.acknowledged) {
+    if (response.acknowledged) {
       // If the inventory item creation is successful, send the created inventory item as a JSON response with a status code of 201
-      res.status(201).json(createdInventoryItem);
+      res.status(201).json(response);
     } else {
       // If the inventory item creation is not acknowledged, handle the error and send an appropriate error response
-      res.status(500).json(createdInventoryItem.error || 'Some error occurred while creating the inventory item.');
+      res
+        .status(500)
+        .json(response.error || 'Some error occurred while creating the inventory item.',
+        );
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -58,7 +60,9 @@ const getInventoryItemById = async (req, res) => {
 
     // Fetch a specific inventory item by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const inventoryItem = await db
+      .collection(collection)
+      .findOne({ _id: new ObjectId(id) });
 
     if (!inventoryItem) {
       return res.status(404).json({ error: 'Inventory item not found.' });
@@ -72,7 +76,6 @@ const getInventoryItemById = async (req, res) => {
   }
 };
 
-
 //Delete an inventory item by id
 const deleteInventoryItem = async (req, res) => {
   const { id } = req.params;
@@ -84,22 +87,19 @@ const deleteInventoryItem = async (req, res) => {
 
     // Delete a specific inventory item by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+    const response = await db
+      .collection(collection)
+      .deleteOne({ _id: new ObjectId(id) });
 
-    console.log(response);
     if (response.deletedCount > 0) {
-      res.status(200).json(response) + 'deleted';
+      res.status(200).json({ message: 'Inventory item deleted' });
     } else {
-      res.status(500).json('Some error occurred while deleting the Inventory item.');
+      res.status(404).json({ error: 'Inventory item not found.' });
     }
-
-  }catch (error) {
-    
+  } catch (error) {
     res.status(500).json({ error: 'Failed to delete inventory item.' });
   }
-  
 };
-
 
 // Update an inventory item by ID
 const updateInventoryItem = async (req, res) => {
@@ -114,11 +114,13 @@ const updateInventoryItem = async (req, res) => {
 
     // Update the inventory item in the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: updatedInventoryItemData },
-      { returnOriginal: false }
-    );
+    const inventoryItem = await db
+      .collection(collection)
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: updatedInventoryItemData },
+        { returnOriginal: false }
+      );
 
     if (!inventoryItem.value) {
       return res.status(404).json({ error: 'Inventory item not found.' });
@@ -137,5 +139,5 @@ module.exports = {
   getAllInventoryItems,
   getInventoryItemById,
   deleteInventoryItem,
-  updateInventoryItem
+  updateInventoryItem,
 };

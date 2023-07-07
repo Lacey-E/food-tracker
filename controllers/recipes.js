@@ -9,26 +9,37 @@ const createRecipe = async (req, res) => {
     const recipeData = req.body;
 
     // Check if the required data is provided
-    if (!recipeData || !recipeData.name || !recipeData.ingredients || !recipeData.instructions) {
-      return res.status(400).json({ error: 'Invalid recipe data.' });
-    }
+    // if (
+    //   !recipeData ||
+    //   !recipeData.name ||
+    //   !recipeData.ingredients ||
+    //   !recipeData.instructions
+    // ) {
+    //   return res.status(400).json({ error: 'Invalid recipe data.' });
+    // }
 
     // Create a new instance of the Recipe model with the provided data
     const recipe = new Recipe(recipeData);
 
     // Save the new recipe to the database using insertOne
-    const createdRecipe = await initDb.getDb().db(database).collection(collection).insertOne(recipe);
+    const response = await initDb
+      .getDb()
+      .db(database)
+      .collection(collection)
+      .insertOne(recipe);
 
-    if (createdRecipe.acknowledged) {
+    if (response.acknowledged) {
       // If the recipe creation is successful, send the created recipe as a JSON response with a status code of 201
-      res.status(201).json(createdRecipe);
+      res.status(201).json(response);
     } else {
       // If the recipe creation is not acknowledged, handle the error and send an appropriate error response
-      res.status(500).json(createdRecipe.error || 'Some error occurred while creating the recipe.');
+      res
+        .status(500)
+        .json(response.error || 'Some error occurred while creating the recipe.');
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -58,7 +69,9 @@ const getRecipeById = async (req, res) => {
 
     // Fetch a specific recipe by ID from the database
     const db = initDb.getDb().db(database);
-    const recipe = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    const recipe = await db
+      .collection(collection)
+      .findOne({ _id: new ObjectId(id) });
 
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found.' });
@@ -72,7 +85,6 @@ const getRecipeById = async (req, res) => {
   }
 };
 
-//Delete an Recipe item by id
 const deleteRecipe = async (req, res) => {
   const { id } = req.params;
   try {
@@ -83,24 +95,20 @@ const deleteRecipe = async (req, res) => {
 
     // Delete a specific recipe item by ID from the database
     const db = initDb.getDb().db(database);
-    const inventoryItem = await db.collection(collection).deleteOne({ _id: new ObjectId(id) }, true);
+    const response = await db
+      .collection(collection)
+      .deleteOne({ _id: new ObjectId(id) });
 
-    console.log(response);
     if (response.deletedCount > 0) {
-      res.status(200).json(response) + 'deleted';
+      res.status(200).json({ message: 'Recipe deleted' });
     } else {
-      res.status(500).json('Some error occurred while deleting the Recipe.');
+      res.status(404).json({ error: 'Recipe not found.' });
     }
-
-  }catch (error) {
-    
-    res.status(500).json({ error: 'Failed to delete Recipe.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete recipe.' });
   }
-  
 };
 
-
-// Update a recipe by ID
 const updateRecipe = async (req, res) => {
   const { id } = req.params;
   try {
@@ -113,12 +121,11 @@ const updateRecipe = async (req, res) => {
 
     // Update the recipe in the database
     const db = initDb.getDb().db(database);
-    const updatedRecipe = await db.collection(collection).updateOne(
-      { _id: new ObjectId(id) },
-      { $set: recipeData }
-    );
+    const updatedRecipe = await db
+      .collection(collection)
+      .updateOne({ _id: new ObjectId(id) }, { $set: recipeData });
 
-    if (updatedRecipe.modifiedCount > 0) {
+    if (updatedRecipe.matchedCount > 0) {
       // If the recipe is updated successfully, send a success response
       res.status(200).json({ message: 'Recipe updated successfully.' });
     } else {
