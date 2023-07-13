@@ -5,6 +5,7 @@ const { ObjectId } = require('mongodb');
 const collection = 'user_registry';
 const database = 'food-tracker';
 
+
 // Create a new user profile
 const createUserProfile = async (req, res) => {
   try {
@@ -47,57 +48,56 @@ const createUserProfile = async (req, res) => {
       throw new Error('Some error occurred while creating the user.');
       res
         .status(500)
-        .json(response.error || 'Some error occurred while creating the user.');
+        .json(response.error ||'Some error occurred while creating the user.');
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
     res.status(500).json({ error: 'Failed to create user profile.' });
-    console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
-// const login = async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
+const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-//     // Find the user by username
-//     const user = await User.findOne({ username });
-//     if (!user) {
-//       return res.status(401).json({ error: 'Invalid username or password' });
-//     }
+    // Find the user by username
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
-//     // Compare the provided password with the hashed password
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) {
-//       return res.status(401).json({ error: 'Invalid username or password' });
-//     }
+    // Compare the provided password with the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
 
-//     // Generate a JWT
-//     const token = jwt.sign({ userId: user._id }, secretKey);
+    // Generate a JWT
+    const token = jwt.sign({ userId: user._id }, secretKey);
 
-//     // Send the token as a response
-//     res.json({ token });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Failed to login' });
-//   }
-// };
+    // Send the token as a response
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to login' });
+  }
+};
 
-// const logout = async (_, res) => {
-//   try {
+const logout = (req, res) => {
+  try {
+    if (!req.user) {
+      return res.json({ message: 'Already logged out' });
+    }
 
-//     if (!req.user) {
-//       return "Already logged out";
-//     }
-
-//     // Clear the session data
-//     req.session.destroy();
-//     res.json({ message: 'Logged out successfully' });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Failed to logout' });
-//   }
-// };
-
+    // Clear the session data
+    req.logout();
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to logout' });
+  }
+};
 
 // Get all user profiles
 const getAllUserProfiles = async (req, res) => {
@@ -112,7 +112,6 @@ const getAllUserProfiles = async (req, res) => {
     res.status(200).json(userProfiles);
   } catch (error) {
     // Handle errors and send an appropriate error response
-    console.error(error);
     res.status(500).json({ error: 'Failed to fetch user profiles.' });
   }
 };
@@ -227,9 +226,9 @@ const updateUserProfile = async (req, res) => {
 };
 
 module.exports = {
+  login,
+  logout,
   createUserProfile,
-  // login,
-  // logout,
   getAllUserProfiles,
   getUserProfileById,
   deleteUser,

@@ -87,7 +87,6 @@ const getInventoryItemById = async (req, res) => {
 };
 
 // Delete an inventory item by ID
-//Delete an inventory item by id
 const deleteInventoryItem = async (req, res) => {
   const { id } = req.params;
   try {

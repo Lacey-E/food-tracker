@@ -21,6 +21,13 @@ const createRecipe = async (req, res) => {
     // Create a new instance of the Recipe model with the provided data
     const recipe = new Recipe(recipeData);
 
+    // Validate the recipe data
+    const validationError = recipe.validateSync();
+    if (validationError) {
+      //If validation fails, send an error response with the validation error message
+      return res.status(400).json({ error: validationError.message});
+    }
+
     // Save the new recipe to the database using insertOne
     const response = await initDb
       .getDb()

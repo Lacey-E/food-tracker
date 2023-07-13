@@ -12,6 +12,13 @@ const createShoppingList = async (req, res) => {
     // Create a new instance of the ShoppingList model with the provided data
     const shoppingList = new ShoppingList(shoppingListData);
 
+    // Validate the shopping list data
+    const validationError = shoppingList.validateSync();
+    if (validationError) {
+      // If validation fails, send an error response with the validation error messages
+      return res.status(400).json({ error: validationError.message });
+    }
+
     // Save the new shopping list to the database using insertOne
     const response = await initDb
       .getDb()
