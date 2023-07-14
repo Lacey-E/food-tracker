@@ -2,9 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const inventoryController = require('../controllers/inventory');
-const oauthController = require('./oauth')
-// GET all inventories
-router.get('/', inventoryController.getAllInventoryItems);
+ const oauthController = require('../controllers/oauth');
+ 
+ 
+ // GET all inventories
+router.get('/',  inventoryController.getAllInventoryItems);
 
 //GET a specific inventory by ID
 router.get('/:id', inventoryController.getInventoryItemById);

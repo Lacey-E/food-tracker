@@ -25,6 +25,9 @@ app.use((req, res, next) => {
 
 app.use('/', require('./routes'));
 
+
+
+
 // Connect to MongoDB and start the server
 initDb((err) => {
   if (err) {

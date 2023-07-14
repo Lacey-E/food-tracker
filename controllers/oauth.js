@@ -16,7 +16,17 @@ const login = async (req, res) => {
   };
 
 
-  
+  const authenticated = (req,res,next) => {
+    try{
+        if (req.session.token){
+            next()
+        }else{
+            throw new Error("Please Login to Continue........")
+        }
+    }catch(err){
+        res.status(400).json({message:err.message})
+    }
+  }
    
 
 
@@ -28,5 +38,5 @@ const login = async (req, res) => {
 
   module.exports ={
     login,
-
+authenticated
   }

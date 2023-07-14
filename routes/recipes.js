@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const recipeController = require('../controllers/recipes');
-const oauthController = require('./oauth')
+const oauthController = require('../controllers/oauth');
 
 // GET all recipes
 router.get('/',  recipeController.getAllRecipes);
@@ -13,7 +13,7 @@ router.get('/:id', recipeController.getRecipeById);
 router.post('/', oauthController.authenticated, recipeController.createRecipe);
 
 //Delete Recipe by ID
-router.delete('/:id',   oauthController.authenticated, recipeController.deleteRecipe);
+router.delete('/:id', oauthController.authenticated, recipeController.deleteRecipe);
 
 // Update a Recipe by ID
 router.put('/:id', oauthController.authenticated, recipeController.updateRecipe);

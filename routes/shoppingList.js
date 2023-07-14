@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const shopController = require('../controllers/shoppingList');
-const oauthcontroller = require('./oauth')
+const oauthController = require('../controllers/oauth');
 
 // GET all shopping lists
 router.get('/', shopController.getAllShoppingLists);
@@ -10,13 +10,13 @@ router.get('/', shopController.getAllShoppingLists);
 router.get('/:id', shopController.getShoppingListById);
 
 // POST request to create a new shop list
-router.post('/', oauthcontroller.authenticated, shopController.createShoppingList);
+router.post('/', oauthController.authenticated, shopController.createShoppingList);
 
 //Delete Shopping List by ID
-router.delete('/:id', oauthcontroller.authenticated, shopController.deleteShoppingList);
+router.delete('/:id', oauthController.authenticated, shopController.deleteShoppingList);
 
 // Update a shopping list by ID
-router.put('/:id', oauthcontroller.authenticated, shopController.putShoppingList);
+router.put('/:id', oauthController.authenticated, shopController.putShoppingList);
 
 
 module.exports = router;
