@@ -65,7 +65,7 @@ const getInventoryItemById = async (req, res) => {
       .findOne({ _id: new ObjectId(id) });
 
     if (!inventoryItem) {
-      return res.status(404).json({ error: 'Inventory item not found.' });
+      return res.status(400).json({ error: 'Inventory item not found.' });
     }
 
     // If the inventory item is found, send it as a JSON response with a 200 status message
@@ -76,16 +76,15 @@ const getInventoryItemById = async (req, res) => {
   }
 };
 
-//Delete an inventory item by id
 const deleteInventoryItem = async (req, res) => {
   const { id } = req.params;
   try {
     // Validate Id
     if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid inventory item ID.' });
+      return res.status(400).json({ error: 'Invalid inventory item ID' });
     }
 
-    // Delete a specific inventory item by ID from the database
+    // Delete a specific recipe item by ID from the database
     const db = initDb.getDb().db(database);
     const response = await db
       .collection(collection)
@@ -94,12 +93,42 @@ const deleteInventoryItem = async (req, res) => {
     if (response.deletedCount > 0) {
       res.status(200).json({ message: 'Inventory item deleted' });
     } else {
-      res.status(404).json({ error: 'Inventory item not found.' });
+      res.status(404).json({ error: 'Recipe not found.' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete inventory item.' });
+    res.status(500).json({ error: 'Failed to delete recipe.' });
   }
 };
+
+
+
+//Delete an inventory item by id
+// const deleteInventoryItem = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     // Validate Id
+//     if (!ObjectId.isValid(id)) {
+//       return res.status(400).json({ error: 'Invalid inventory item ID.' });
+//     }
+
+//     // Delete a specific inventory item by ID from the database
+//     const db = initDb.getDb().db(database);
+//     const response = await db
+//       .collection(collection)
+//       .deleteOne({ _id: new ObjectId(id) });
+
+//     if (response.deletedCount > 0) {
+//       res.status(200).json({ message: 'Inventory item deleted' });
+//     } else {
+//       res.status(404).json({ error: 'Inventory item not found.' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to delete inventory item.' });
+//   }
+// };
+
+
+
 
 // Update an inventory item by ID
 const updateInventoryItem = async (req, res) => {
