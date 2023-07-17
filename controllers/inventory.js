@@ -12,7 +12,7 @@ const createInventoryItem = async (req, res) => {
     const inventoryItem = new InventoryItem(inventoryItemData);
 
     // Save the new inventory item to the database using insertOne
-    const response = await initDb
+    const response= await initDb
       .getDb()
       .db(database)
       .collection(collection)
@@ -25,9 +25,7 @@ const createInventoryItem = async (req, res) => {
       // If the inventory item creation is not acknowledged, handle the error and send an appropriate error response
       res
         .status(500)
-        .json(
-          response.error ||
-            'Some error occurred while creating the inventory item.'
+        .json(response.error || 'Some error occurred while creating the inventory item.',
         );
     }
   } catch (error) {

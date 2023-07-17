@@ -24,9 +24,11 @@ const createShoppingList = async (req, res) => {
       res.status(201).json(response);
     } else {
       // If the shopping list creation is not acknowledged, handle the error and send an appropriate error response
-      res.status(500).json({
-        error: 'Some error occurred while creating the shopping list.',
-      });
+      res
+        .status(500)
+        .json({
+          error: 'Some error occurred while creating the shopping list.',
+        });
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
