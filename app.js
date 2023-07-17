@@ -25,7 +25,7 @@ app.get('/login', (req, res) => {
     res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&prompt=consent`);
 })
 
-app.get('/github/callback', (req, res) => {
+app.get('github/callback', (req, res) => {
     const {code}= req.query
     const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
     const opts = {headers: {accept: 'application/json'}}
