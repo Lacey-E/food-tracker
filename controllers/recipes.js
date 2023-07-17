@@ -35,7 +35,9 @@ const createRecipe = async (req, res) => {
       // If the recipe creation is not acknowledged, handle the error and send an appropriate error response
       res
         .status(500)
-        .json(response.error || 'Some error occurred while creating the recipe.');
+        .json(
+          response.error || 'Some error occurred while creating the recipe.'
+        );
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
