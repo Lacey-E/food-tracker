@@ -33,11 +33,6 @@ app.get('/github/callback', (req, res) => {
   const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
   const opts = {headers: {accept: 'application/json'}}
   axios.post("https://github.com/login/oauth/access_token", body, opts)
-app.get('github/callback', (req, res) => {
-    const {code}= req.query
-    const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
-    const opts = {headers: {accept: 'application/json'}}
-    axios.post("https://github.com/login/oauth/access_token", body, opts)
 
   .then((_res) => {
 
@@ -55,6 +50,7 @@ app.get('github/callback', (req, res) => {
   .catch(err => res.status(500).json({ message: err.message }));
 
 });
+
 
 
 
