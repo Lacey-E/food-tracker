@@ -1,15 +1,40 @@
+// Import the InventoryItem model and database initialization
 const InventoryItem = require('../models/inventoryModel');
 const initDb = require('../config/db');
+
+// Import the ObjectId from mongoose.Types for validating IDs
 const { ObjectId } = require('mongoose').Types;
+
+// Define the MongoDB collection name and database name
 const collection = 'inventory_items';
 const database = 'food-tracker';
 
+// Create a new inventory item
 const createInventoryItem = async (req, res) => {
   try {
     const inventoryItemData = req.body;
 
-    // Create a new instance of the InventoryItem model with the provided data
-    const inventoryItem = new InventoryItem(inventoryItemData);
+    // Validate the provided data
+    if (
+      !inventoryItemData ||
+      !inventoryItemData.name ||
+      !inventoryItemData.quantity
+    ) {
+      return res.status(400).json({ error: 'Invalid inventory item data. Please complete the fields' });
+    }
+    const userId = req.user._id; // The user ID extracted from the token or session
+    // Create a new instance of the InventoryItem model with the provided data and associate it with the user
+    const inventoryItem = new InventoryItem({
+      ...inventoryItemData,
+      owner: userId,
+    });
+
+    // Validate the inventory item data
+    const validationError = inventoryItem.validateSync();
+    if (validationError) {
+      // If validation fails, send an error response with the validation error messages
+      return res.status(400).json({ error: validationError.message });
+    }
 
     // Save the new inventory item to the database using insertOne
     const response = await initDb
@@ -27,7 +52,7 @@ const createInventoryItem = async (req, res) => {
         .status(500)
         .json(
           response.error ||
-            'Some error occurred while creating the inventory item.'
+          'Some error occurred while creating the inventory item.'
         );
     }
   } catch (error) {
@@ -36,6 +61,7 @@ const createInventoryItem = async (req, res) => {
   }
 };
 
+// Get all inventory items
 const getAllInventoryItems = async (req, res) => {
   try {
     // Access the database using the custom method
@@ -52,6 +78,7 @@ const getAllInventoryItems = async (req, res) => {
   }
 };
 
+// Get an inventory item by ID
 const getInventoryItemById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -78,11 +105,11 @@ const getInventoryItemById = async (req, res) => {
   }
 };
 
-//Delete an inventory item by id
+// Delete an inventory item by ID
 const deleteInventoryItem = async (req, res) => {
   const { id } = req.params;
   try {
-    // Validate Id
+    // Validate the provided ID as a valid ObjectId
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid inventory item ID.' });
     }
@@ -114,6 +141,11 @@ const updateInventoryItem = async (req, res) => {
 
     const updatedInventoryItemData = req.body;
 
+    // Check if the required data is provided
+    if (!updatedInventoryItemData || !updatedInventoryItemData.name || !updatedInventoryItemData.quantity || !updatedInventoryItemData.unit) {
+      return res.status(400).json({ error: 'Invalid inventory item data.' });
+    }
+
     // Update the inventory item in the database
     const db = initDb.getDb().db(database);
     const inventoryItem = await db
@@ -136,6 +168,7 @@ const updateInventoryItem = async (req, res) => {
   }
 };
 
+// Export the functions so they can be used in other parts of the application
 module.exports = {
   createInventoryItem,
   getAllInventoryItems,

@@ -13,14 +13,6 @@ const PORT = process.env.PORT || 3000; // Use the environment variable PORT if a
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
-
-
-
-
-
-
-
-
 app.use(session({
     secret: process.env.GITHUB_CLIENT_SECRET,
     resave:false,
@@ -33,7 +25,7 @@ app.get('/login', (req, res) => {
     res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&prompt=consent`);
 })
 
-app.get('/github/callback', (req, res) => {
+app.get('github/callback', (req, res) => {
     const {code}= req.query
     const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
     const opts = {headers: {accept: 'application/json'}}
@@ -63,12 +55,6 @@ app.get('/logout', (req, res) => {
     
 })
 
-
-
-
-
-
-
 app.use((req, res, next) => {
     // Set response headers to allow cross-origin resource sharing (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -82,9 +68,6 @@ app.use((req, res, next) => {
   });
 
 app.use('/', require('./routes'));
-
-
-
 
 // Connect to MongoDB and start the server
 initDb((err) => {
