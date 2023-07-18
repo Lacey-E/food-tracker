@@ -15,11 +15,15 @@ const createInventoryItem = async (req, res) => {
       !inventoryItemData.name ||
       !inventoryItemData.quantity
     ) {
-      return res.status(400).json({ error: 'Invalid inventory item data.' });
+      return res.status(400).json({ error: 'Invalid inventory item data. Please complete the fields' });
     }
-
+    const userId = req.user._id; // The user ID extracted from the token or session
     // Create a new instance of the InventoryItem model with the provided data
-    const inventoryItem = new InventoryItem(inventoryItemData);
+    // Create a new instance of the InventoryItem model with the provided data and associate it with the user
+    const inventoryItem = new InventoryItem({
+      ...inventoryItemData,
+      owner: userId,
+    });
 
     // Validate the inventory item data
     const validationError = inventoryItem.validateSync();
@@ -44,7 +48,7 @@ const createInventoryItem = async (req, res) => {
         .status(500)
         .json(
           response.error ||
-            'Some error occurred while creating the inventory item.'
+          'Some error occurred while creating the inventory item.'
         );
     }
   } catch (error) {

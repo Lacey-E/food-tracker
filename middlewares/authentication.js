@@ -1,29 +1,21 @@
-const redis = require('redis');
-const JWTR = require('jwt-redis').default;
-const redisClient = redis.createClient();
-const jwtr = new JWTR(redisClient);
+const jwt = require('jsonwebtoken');
 
-const jwtAuthMiddleware = async (req, res, next) => {
-  const token = req.header('auth-token');
+// JWT Secret Key
+const jwtSecret = process.env.SECRET_KEY; // Replace with a secure secret key
 
-  // IN CASE THE TOKEN DOESN'T EXIST
-  if (!token || token === '') {
-    req.isAuth = false;
-    return next(); // Call the next middleware or route handler
-  }
+// Middleware to generate JWT
+const generateJWT = (user) => {
+  const payload = {
+    id: user._id,
+    username: user.username,
+    // Add other user data you want to include in the JWT payload
+  };
 
-  try {
-    const verified = await jwtr.verify(token, process.env.SECRET_TOKEN);
-    // IN CASE TOKEN EXISTS AND VALID
-    req.user = verified;
-    req.isAuth = true;
-    next(); // Call the next middleware or route handler
-  } catch (err) {
-    // IN CASE TOKEN EXISTS BUT INVALID
-    req.isAuth = false;
-    next(err); // Pass the error to the error handler
-  }
+  const options = {
+    expiresIn: '1h', // Token expiration time (e.g., 1 hour)
+  };
+
+  return jwt.sign(payload, jwtSecret, options);
 };
 
-module.exports = jwtAuthMiddleware;
-
+module.exports = generateJWT;

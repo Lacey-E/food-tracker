@@ -15,7 +15,8 @@ const inventoryItemSchema = new mongoose.Schema({
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserProfile',
+    ref: 'UserProfile', // Assuming you have a model named 'UserProfile' for user profiles
+    required: true,
   },
 });
 
