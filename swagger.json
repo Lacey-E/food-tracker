@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "FoodTrack API",
     "description": "API documentation for the FoodTrack web application",
@@ -7,14 +7,36 @@
   },
   "host": "https://food-tracker-v22e.onrender.com",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "User Registry",
+      "description": "API endpoints for managing user registration and profile"
+    },
+    {
+      "name": "Inventory Items",
+      "description": "API endpoints for managing inventory items"
+    },
+    {
+      "name": "Recipes",
+      "description": "API endpoints for managing recipes"
+    },
+    {
+      "name": "Shopping List",
+      "description": "API endpoints for managing the shopping list"
+    }
+  ],
   "schemes": [
     "https",
     "http"
   ],
   "paths": {
-    "/users/": {
+    "/users": {
       "get": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Get all users",
+        "description": "Retrieve a list of all users.",
         "responses": {
           "200": {
             "description": "OK"
@@ -25,7 +47,11 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user with the provided information.",
         "parameters": [
           {
             "name": "body",
@@ -33,8 +59,14 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "John Doe"
+                },
+                "email": {
+                  "example": "john.doe@example.com"
+                },
                 "password": {
-                  "example": "any"
+                  "example": "********"
                 }
               }
             }
@@ -53,12 +85,16 @@
         }
       }
     },
-    "/users/{id}": {
+    "/users/{userId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Get user by ID",
+        "description": "Retrieve a user's information by their ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -67,9 +103,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -80,10 +113,14 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Update user",
+        "description": "Update user with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -94,16 +131,22 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "John Doe"
+                },
+                "email": {
+                  "example": "john.doe@example.com"
+                },
                 "password": {
-                  "example": "any"
+                  "example": "********"
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -117,37 +160,25 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "User Registry"
+        ],
+        "summary": "Delete user",
+        "description": "Delete user by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/login": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -155,22 +186,13 @@
         }
       }
     },
-    "/users/logout": {
+    "/inventory": {
       "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/inventory/": {
-      "get": {
-        "description": "",
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Get all inventory items",
+        "description": "Retrieve a list of all inventory items.",
         "responses": {
           "200": {
             "description": "OK"
@@ -181,7 +203,11 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Create a new inventory item",
+        "description": "Create a new inventory item with the provided information.",
         "parameters": [
           {
             "name": "body",
@@ -190,10 +216,10 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "example": "Apple"
                 },
                 "quantity": {
-                  "example": "any"
+                  "example": 10
                 }
               }
             }
@@ -212,12 +238,16 @@
         }
       }
     },
-    "/inventory/{id}": {
+    "/inventory/{inventoryId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Get inventory by ID",
+        "description": "Retrieve an Inventory Item's information by their ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "inventoryId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -226,31 +256,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -261,10 +266,14 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Update inventory item",
+        "description": "Update inventory item with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -276,21 +285,18 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "example": "Apple"
                 },
                 "quantity": {
-                  "example": "any"
-                },
-                "unit": {
-                  "example": "any"
+                  "example": 20
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -302,11 +308,41 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Inventory Items"
+        ],
+        "summary": "Delete inventory item",
+        "description": "Delete an inventory item by ID.",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-    "/recipes/": {
+    "/recipes": {
       "get": {
-        "description": "",
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Get all recipes",
+        "description": "Retrieve a list of all recipes.",
         "responses": {
           "200": {
             "description": "OK"
@@ -317,7 +353,11 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Create a new recipe",
+        "description": "Create a new recipe with the provided information.",
         "parameters": [
           {
             "name": "body",
@@ -326,13 +366,13 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "example": "Apple Pie"
                 },
                 "ingredients": {
-                  "example": "any"
+                  "example": "Apple, sugar, flour, butter"
                 },
                 "instructions": {
-                  "example": "any"
+                  "example": "1. Peel and slice the apples..."
                 }
               }
             }
@@ -351,12 +391,16 @@
         }
       }
     },
-    "/recipes/{id}": {
+    "/recipes/{recipeId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Get recipe by ID",
+        "description": "Retrieve a recipes's information by their ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -365,34 +409,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "404": {
             "description": "Not Found"
@@ -403,10 +419,14 @@
         }
       },
       "put": {
-        "description": "",
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Update recipe",
+        "description": "Update recipe with the provided information.",
         "parameters": [
           {
-            "name": "id",
+            "name": "recipeId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -417,16 +437,22 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "example": "Apple Pie"
+                },
                 "ingredients": {
-                  "example": "any"
+                  "example": "Apple, sugar, flour, butter"
+                },
+                "instructions": {
+                  "example": "1. Peel and slice the apples..."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -438,11 +464,41 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Recipes"
+        ],
+        "summary": "Delete recipe",
+        "description": "Delete a recipe by ID.",
+        "parameters": [
+          {
+            "name": "recipeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-    "/shoppingList/": {
+    "/shoppingList": {
       "get": {
-        "description": "",
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Get shopping list",
+        "description": "Retrieve the shopping list.",
         "responses": {
           "200": {
             "description": "OK"
@@ -453,7 +509,11 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Add item to shopping list",
+        "description": "Add an item to the shopping list.",
         "parameters": [
           {
             "name": "body",
@@ -461,14 +521,11 @@
             "schema": {
               "type": "object",
               "properties": {
-                "listName": {
-                  "example": "any"
+                "item": {
+                  "example": "Milk"
                 },
-                "userProfile": {
-                  "example": "any"
-                },
-                "items": {
-                  "example": "any"
+                "quantity": {
+                  "example": 2
                 }
               }
             }
@@ -487,12 +544,16 @@
         }
       }
     },
-    "/shoppingList/{id}": {
+    "/shoppingList/{shoppingListId}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Get Shopping List by ID",
+        "description": "Retrieve a Shopping List's information by their ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "shoppingListId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -501,6 +562,47 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Update shopping list item",
+        "description": "Update a shopping list item with the provided information.",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "example": "Milk"
+                },
+                "quantity": {
+                  "example": 3
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
           },
           "400": {
             "description": "Bad Request"
@@ -514,211 +616,28 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Shopping List"
+        ],
+        "summary": "Delete shopping list item",
+        "description": "Delete a shopping list item by ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "itemId",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+          "204": {
+            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/dataGenerator/userProfiles": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "numProfiles": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/dataGenerator/inventoryItems": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "numItems": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/dataGenerator/recipes": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "numRecipes": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/dataGenerator/shoppingLists": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "numLists": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/auth/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/auth/callback": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/login": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/logout": {
-      "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
           }
         }
       }

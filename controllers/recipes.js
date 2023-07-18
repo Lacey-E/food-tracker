@@ -80,12 +80,14 @@ const createRecipe = async (req, res) => {
           .deleteOne({ _id: response.insertedId });
 
         return res.status(500).json(
+          
           inventoryResponse.error || 'Some error occurred while creating the inventory item.'
         );
       }
 
       // Add the created inventory item ID to the array for association with the recipe
-      ingredientIds.push(inventoryResponse.insertedId);
+      ingredientIds.push(inventoryResponse.insertedId
+        );
     }
 
     // Update the recipe with the associated inventory item IDs

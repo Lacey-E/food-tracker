@@ -5,7 +5,7 @@ const doc = {
     title: 'FoodTrack API',
     description: 'API documentation for the FoodTrack web application',
   },
-  host: 'https://food-tracker-v22e.onrender.com',
+  host: 'localhost:3000',
   schemes: ['https', 'http'],
 };
 
@@ -17,5 +17,5 @@ swaggerAutogen(outputFile, endpointsFiles, doc);
 
 // Run server after it gets generated
 // swaggerAutogen(outputFile, endpointsFiles, doc).then(async () => {
-//   await import('./index.js');
+//   await import('./app.js');
 // });
