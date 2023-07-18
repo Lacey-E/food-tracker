@@ -9,8 +9,25 @@ const createShoppingList = async (req, res) => {
   try {
     const shoppingListData = req.body;
 
+    // Check if the required data is provided
+    if (
+      !shoppingListData ||
+      !shoppingListData.listName ||
+      !shoppingListData.userProfile ||
+      !shoppingListData.items
+    ) {
+      return res.status(400).json({ error: 'Invalid shopping list data.' });
+    }
+
     // Create a new instance of the ShoppingList model with the provided data
     const shoppingList = new ShoppingList(shoppingListData);
+
+    // Validate the shopping list data
+    const validationError = shoppingList.validateSync();
+    if (validationError) {
+      // If validation fails, send an error response with the validation error messages
+      return res.status(400).json({ error: validationError.message });
+    }
 
     // Save the new shopping list to the database using insertOne
     const response = await initDb
@@ -21,20 +38,20 @@ const createShoppingList = async (req, res) => {
 
     if (response.acknowledged) {
       // If the shopping list creation is successful, send the created shopping list as a JSON response with a status code of 201
-      res.status(201).json(response);
+      res.status(201).json({ message: 'Shopping list created successfully', shoppingList: response.ops[0] });
     } else {
       // If the shopping list creation is not acknowledged, handle the error and send an appropriate error response
-      res
-        .status(500)
-        .json({
-          error: 'Some error occurred while creating the shopping list.',
-        });
+      res.status(500).json({
+        error: 'Some error occurred while creating the shopping list.',
+      });
     }
   } catch (error) {
     // If any server error occurs during the process, send a generic server error response
+    console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
 };
+
 
 // Get all shopping lists
 const getAllShoppingLists = async (req, res) => {
@@ -128,12 +145,15 @@ const putShoppingList = async (req, res) => {
       );
 
     if (updatedShoppingList.value) {
+      // If the shopping list is updated successfully, send the updated shopping list as a JSON response with a 200 status message
       res.status(200).json(updatedShoppingList.value);
     } else {
+      // If no shopping list is found with the given ID, send a not found response
       res.status(404).json({ error: 'Shopping list not found.' });
     }
   } catch (error) {
     // If any error occurs during the process, send a generic server error response
+    console.error(error);
     res.status(500).json({ error: 'Failed to update shopping list.' });
   }
 };

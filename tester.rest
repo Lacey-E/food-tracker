@@ -1,26 +1,26 @@
 // CREATE A RANDOM DATA
-POST http://localhost:8000/dataGenerator/userProfiles 
+POST http://localhost:3000/dataGenerator/userProfiles 
 Content-Type: application/json
 
 {
   "numProfiles": 1
 } 
 ### Creat random custom recipes
-POST http://localhost:8000/dataGenerator/recipes
+POST http://localhost:3000/dataGenerator/recipes
 Content-Type: application/json
 
 {
   "numRecipes": 1
 } 
 ### Create random inventory list
-POST http://localhost:8000/dataGenerator/inventoryItems
+POST http://localhost:3000/dataGenerator/inventoryItems
 Content-Type: application/json
 
 {
   "numItems": 1
 } 
 ### Create random shopping list
-POST http://localhost:8000/dataGenerator/shoppingLists
+POST http://localhost:3000/dataGenerator/shoppingLists
 Content-Type: application/json
 
 {

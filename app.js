@@ -33,6 +33,11 @@ app.get('/github/callback', (req, res) => {
   const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
   const opts = {headers: {accept: 'application/json'}}
   axios.post("https://github.com/login/oauth/access_token", body, opts)
+app.get('github/callback', (req, res) => {
+    const {code}= req.query
+    const body = {client_id: process.env.GITHUB_CLIENT_ID, client_secret: process.env.GITHUB_CLIENT_SECRET, code}
+    const opts = {headers: {accept: 'application/json'}}
+    axios.post("https://github.com/login/oauth/access_token", body, opts)
 
   .then((_res) => {
 
@@ -60,12 +65,6 @@ app.get('/logout', (req, res) => {
     
 })
 
-
-
-
-
-
-
 app.use((req, res, next) => {
     // Set response headers to allow cross-origin resource sharing (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -79,9 +78,6 @@ app.use((req, res, next) => {
   });
 
 app.use('/', require('./routes'));
-
-
-
 
 // Connect to MongoDB and start the server
 initDb((err) => {
