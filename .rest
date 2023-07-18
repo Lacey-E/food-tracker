@@ -1,28 +1,142 @@
-GET http://localhost:8000/inventory
+### Get all users
+GET http://localhost:3000/users HTTP/1.1
 
-###
-POST http://localhost:8000/inventory
+### Get all shopping list
+GET http://localhost:3000/shoppingList HTTP/1.1
+
+### Get all inventory
+GET http://localhost:3000/inventory HTTP/1.1
+
+### Get all recipes
+GET http://localhost:3000/recipes HTTP/1.1
+
+### Get one user
+GET http://localhost:3000/users/ HTTP/1.1
+
+### Get one shopping list
+GET http://localhost:3000/shoppingList/ HTTP/1.1
+
+### Get one inventory
+GET http://localhost:3000/inventory/ HTTP/1.1
+
+### Get one 
+GET http://localhost:3000/recipes/ HTTP/1.1
+
+
+### Add user
+POST http://localhost:3000/users HTTP/1.1
 Content-Type: application/json
 
- {
-    "name": "Banner",
-    "quantity": 20,
-    "expirationDate": "07-01-2023",
-    "owner": "6499c37391a3be7f6fe09fa1"
+{
+  "username": "DonJinee",
+  "email": "donjinee@gmail.com",
+  "password": "Don@8888",
+  "dietaryPreferences": "Eat all",
+  "firstName": "Richard",
+  "lastName": "Omachona",
+  "age": 34,
+  "gender": "M",
+  "address": "Nigeria",
+   "phoneNumber": "09078765454"
+}
 
-  }
-
-###
-PUT http://localhost:8000/inventory/649df88c40dfd5ee1be51257
+### Add shopping list
+POST http://localhost:3000/shoppingList HTTP/1.1
 Content-Type: application/json
 
-  {
-    "name": "Banner",
-    "quantity": 20,
-    "expirationDate": "07-01-2023",
-    "owner": "James"
+{
+  "listName": "Groceries",
+  "userProfile": "64b66fe3e847e0fcb7cbcc09",
+  "items": "64b672de74ee2a33e1a34458",
+  "isCompleted": true,
+  "priority": "High",
+  "notes": "Nothing to say"
+}
 
-  }
+### Add recipe
+POST http://localhost:3000/recipes HTTP/1.1
+Content-Type: application/json
 
-###
-DELETE http://localhost:8000/inventory/649df88c40dfd5ee1be51257 HTTP/1.1
+{
+  "recipeName": "skippo",
+  "ingredients": "skippo@gmail.com",
+  "preparationSteps": "skp@8888",
+  "dietaryInformation": "Eat all",
+  "servingSize": "Taju",
+  "cookingTime": "Abdul",
+  "difficultyLevel": 30,
+  "gender": "M",
+  "cuisine": "Naija"
+}
+
+### Add inventory
+POST http://localhost:3000/inventory HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Monday",
+  "quantity": 20,
+  "expirationDate": "2023-02-12",
+  "owner": "64b66fe3e847e0fcb7cbcc09"
+}
+
+### Edit user
+PUT http://localhost:3000/users/64b66fe3e847e0fcb7cbcc09 HTTP/1.1
+Content-Type: application/json
+
+{
+  "password": "Jinee@88"
+}
+
+### Edit shopping list
+PUT http://localhost:3000/shoppingList HTTP/1.1
+Content-Type: application/json
+
+{
+  "listName": "skippo",
+  "userProfile": "skippo@gmail.com",
+  "items": "skp@8888",
+  "dateCreated": "Eat all",
+  "isCompleted": "Taju",
+  "priority": "Abdul",
+  "notes": 30
+}
+
+### Edit recipe
+PUT http://localhost:3000/recipes HTTP/1.1
+Content-Type: application/json
+
+{
+  "recipeName": "skippo",
+  "ingredients": "skippo@gmail.com",
+  "preparationSteps": "skp@8888",
+  "dietaryInformation": "Eat all",
+  "servingSize": "Taju",
+  "cookingTime": "Abdul",
+  "difficultyLevel": 30,
+  "gender": "M",
+  "cuisine": "Naija"
+}
+
+### Edit inventory
+PUT http://localhost:3000/inventory HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "skippo",
+  "quantity": "skippo@gmail.com",
+  "expirationDate": "skp@8888",
+  "owner": "Eat all"
+}
+
+### Delete one user
+DELETE http://localhost:3000/users/64b66d22df2ed1807dfb2c00 HTTP/1.1
+
+### Delete one shopping list
+DELETE http://localhost:3000/shoppingList/ HTTP/1.1
+
+### Delete one inventory
+DELETE http://localhost:3000/inventory/ HTTP/1.1
+
+### Delete one 
+DELETE http://localhost:3000/recipes/ HTTP/1.1

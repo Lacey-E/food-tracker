@@ -1,157 +1,137 @@
-const UserProfile = require('../models/userModel');
-const initDb = require('../config/db');
-const passwordUtil = require('../middlewares/passwordUtil');
-const { ObjectId } = require('mongodb');
-const collection = 'user_registry';
-const database = 'food-tracker';
+const UserProfile = require('../models/userModel')
+const errorHandler = require('http-errors')
+const validate = require('../models/Validation')
+const mongoose = require('mongoose')
 
-const createUserProfile = async (req, res) => {
+const createUserProfile = async (req, res, next) => {
   try {
-    const userProfileData = req.body;
-
-    // Validate password
-    const passwordCheck = passwordUtil.passwordPass(userProfileData.password);
-    if (passwordCheck.error) {
-      return res.status(400).json({ error: passwordCheck.error });
-    }
-
-    // Create a new instance of the UserProfile model with the provided data
-    const userProfile = new UserProfile(userProfileData);
-
-    // Save the new user profile to the database using insertOne
-    const response = await initDb
-      .getDb()
-      .db(database)
-      .collection(collection)
-      .insertOne(userProfile);
-
-    if (response.acknowledged) {
-      // If the user profile creation is successful, send the created user profile as a JSON response with a status code of 201
-      res.status(201).json(response);
-    } else {
-      // If the user profile creation is not acknowledged, handle the error and send an appropriate error response
-      res
-        .status(500)
-        .json(response.error || 'Some error occurred while creating the user.');
-    }
-  } catch (error) {
-    // If any server error occurs during the process, send a generic server error response
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    const user = await validate.validateAsync(req.body, {abortEarly: false})
+    const addUser = new UserProfile(user)
+    const savedUser = await addUser.save()
+    res.status(201).json(savedUser)
+  } catch (err) {
+    console.log(err);
+        if(err.name === 'ValidationError'){
+            next(errorHandler(422, err.message));
+            return;
+        }
+        next(err);
   }
 };
 
-const getAllUserProfiles = async (req, res) => {
+const getAllUserProfiles = async (req, res, next) => {
   try {
     // Access the database using the custom method
-    const db = initDb.getDb().db(database);
+    // const db = initDb.getDb().db(database);
 
     // Fetch all user profiles from the collection and convert the result to an array
-    const userProfiles = await db.collection(collection).find().toArray();
+    const userProfiles = await UserProfile.find()
 
     // Send the retrieved user profiles as a JSON response
     res.status(200).json(userProfiles);
-  } catch (error) {
+  } catch (err) {
     // Handle errors and send an appropriate error response
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch user profiles.' });
+    res.status(500).json({message: err})
   }
 };
 
-const getUserProfileById = async (req, res) => {
-  const { id } = req.params;
+const getUserProfileById = async (req, res, next) => {
+
   try {
     // Validate the provided ID as a valid ObjectId
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid user profile ID.' });
-    }
+    // if (!ObjectId.isValid(id)) {
+    //   return res.status(400).json({ error: 'Invalid user profile ID.' });
+    // }
 
-    const db = initDb.getDb().db(database);
-    const userProfile = await db
-      .collection(collection)
-      .findOne({ _id: new ObjectId(id) });
-
+    const userProfile = await UserProfile.findById(req.params.id)
     if (!userProfile) {
-      return res.status(404).json({ error: 'User profile not found.' });
+      throw errorHandler(404, 'User profile not found.');
     }
 
     // If the user profile is found, send it as a JSON response with a 200 status message
     res.status(200).json(userProfile);
-  } catch (error) {
+  } catch (err) {
     // If any error occurs during the process, send a generic server error response
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch user profile.' });
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid user id"));
+      return;
+  }
+  next(err);
   }
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
-    const userId = new ObjectId(req.params.id);
+    const deleteUser = await UserProfile.findByIdAndDelete({_id: req.params.id})
 
     // Validate Id
-    if (!ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid User ID' });
+    if (!deleteUser) {
+      throw errorHandler(404, 'Invalid User ID' );
     }
 
     // Delete a specific User by ID from the database
-    const response = await initDb
-      .getDb()
-      .db(database)
-      .collection(collection)
-      .deleteOne({ _id: userId });
+    // const response = await UserProfile.findByIdAndDelete({_id: req.params.id})
 
-    if (response.deletedCount > 0) {
-      res.status(200).json({ message: 'User deleted successfully.' });
-    } else {
-      res.status(404).json({ error: 'User not found.' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to delete User.' });
+    // if (response.deletedCount > 0) {
+    //   res.status(200).json({ message: 'User deleted successfully.' });
+    // } else {
+    //   res.status(404).json({ error: 'User not found.' });
+    // }
+    console.log(deleteUser)
+    res.json(deleteUser)
+  } catch (err) {
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid user id"));
+      return;
+  }
+  next(err);
   }
 };
 
-const updateUserProfile = async (req, res) => {
-  const { id } = req.params;
-  const updatedUserProfileData = req.body;
+const updateUserProfile = async (req, res, next) => {
+  // const { id } = req.params;
 
   try {
     // Validate the provided ID as a valid ObjectId
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid user profile ID.' });
-    }
+    // if (!ObjectId.isValid(id)) {
+    //   return res.status(400).json({ error: 'Invalid user profile ID.' });
+    // }
 
-    // Validate password
-    const passwordCheck = passwordUtil.passwordPass(
-      updatedUserProfileData.password
-    );
-    if (passwordCheck.error) {
-      return res.status(400).json({ error: passwordCheck.error });
-    }
 
     // Update the user profile in the database
-    const db = initDb.getDb().db(database);
-    const updatedUserProfile = await db
-      .collection(collection)
-      .findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedUserProfileData },
-        { returnOriginal: false }
-      );
+    const updatedUserProfile = await UserProfile.findByIdAndUpdate(
+      {_id: req.params.id},
+      {$set: req.body
+        // {
+      //   username: req.body.username,
+      //   email: req.body.email,
+      //   password: req.body.password,
+      //   dietaryPreferences: req.body.dietaryPreferences,
+      //   firstName: req.body.firstName,
+      //   lastName: req.body.lastName,
+      //   age: req.body.age,
+      //   gender: req.body.gender,
+      //   address: req.body.address,
+      //   phoneNumber: req.body.phoneNumber
+      // }
+      }
+  );
 
-    if (!updatedUserProfile.value) {
-      return res.status(404).json({ error: 'User profile not found.' });
+    if (!updatedUserProfile) {
+      throw errorHandler(404, 'User profile not found.');
     }
 
     // If the user profile is updated successfully, send it as a JSON response with a 200 status code
-    res.status(200).json({
-      message: 'User profile updated successfully.',
-      userProfile: updatedUserProfile.value,
+    res.status(204).json({
+      message: 'User profile updated successfully. Information' + updatedUserProfile
     });
-  } catch (error) {
+  } catch (err) {
     // If any error occurs during the process, send a generic server error response
-    console.error(error);
-    res.status(500).json({ error: 'Failed to update user profile.' });
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid user id"));
+      return;
+  }
+  next(err);
   }
 };
 

@@ -1,139 +1,83 @@
 const InventoryItem = require('../models/inventoryModel');
-const initDb = require('../config/db');
-const { ObjectId } = require('mongoose').Types;
-const collection = 'inventory_items';
-const database = 'food-tracker';
+const validate = require('../models/Validation')
+const errorHandler = require('http-errors')
 
-const createInventoryItem = async (req, res) => {
-  try {
-    const inventoryItemData = req.body;
-
-    // Create a new instance of the InventoryItem model with the provided data
-    const inventoryItem = new InventoryItem(inventoryItemData);
-
-    // Save the new inventory item to the database using insertOne
-    const response= await initDb
-      .getDb()
-      .db(database)
-      .collection(collection)
-      .insertOne(inventoryItem);
-
-    if (response.acknowledged) {
-      // If the inventory item creation is successful, send the created inventory item as a JSON response with a status code of 201
-      res.status(201).json(response);
-    } else {
-      // If the inventory item creation is not acknowledged, handle the error and send an appropriate error response
-      res
-        .status(500)
-        .json(response.error || 'Some error occurred while creating the inventory item.',
-        );
-    }
-  } catch (error) {
-    // If any server error occurs during the process, send a generic server error response
-    res.status(500).json({ error: 'Server error' });
+const createInventoryItem = async (req, res, next) => {
+  try{
+    const inventoryItem = await req.body
+    const createInventory = new InventoryItem(inventoryItem)
+    const savedInventory = await createInventory.save()
+    res.status(201).json(savedInventory)
+  }catch(err){
+    if(err.name === 'ValidationError'){
+      next(errorHandler(422, err.message));
+      return;
   }
-};
-
-const getAllInventoryItems = async (req, res) => {
-  try {
-    // Access the database using the custom method
-    const db = initDb.getDb().db(database);
-
-    // Fetch all inventory items from the collection and convert the result to an array
-    const inventoryItems = await db.collection(collection).find().toArray();
-
-    // Send the retrieved inventory items as a JSON response
-    res.json(inventoryItems);
-  } catch (error) {
-    // Handle errors and send an appropriate error response
-    res.status(500).json({ error: 'Failed to fetch inventory items.' });
+  next(err);
   }
-};
+}
 
-const getInventoryItemById = async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Validate the provided ID as a valid ObjectId
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid inventory item ID.' });
-    }
-
-    // Fetch a specific inventory item by ID from the database
-    const db = initDb.getDb().db(database);
-    const inventoryItem = await db
-      .collection(collection)
-      .findOne({ _id: new ObjectId(id) });
-
-    if (!inventoryItem) {
-      return res.status(404).json({ error: 'Inventory item not found.' });
-    }
-
-    // If the inventory item is found, send it as a JSON response with a 200 status message
-    res.status(200).json(inventoryItem);
-  } catch (error) {
-    // If any error occurs during the process, send a generic server error response
-    res.status(500).json({ error: 'Failed to fetch inventory item.' });
+const getAllInventoryItems = async (req,res,next) => {
+  try{
+    const inventoryItems = await InventoryItem.find()
+    res.status(200).json(inventoryItems)
+  }catch(err){
+    res.status(500).json({message: err})
   }
-};
+}
+const getInventoryItemById = async (req,res, next) => {
+  try{
+    const oneInventory = await InventoryItem.findById(req.params.id)
 
-//Delete an inventory item by id
-const deleteInventoryItem = async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Validate Id
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid inventory item ID.' });
+    if(!oneInventory) {
+      throw errorHandler(404, 'Inventory list not found')
     }
 
-    // Delete a specific inventory item by ID from the database
-    const db = initDb.getDb().db(database);
-    const response = await db
-      .collection(collection)
-      .deleteOne({ _id: new ObjectId(id) });
-
-    if (response.deletedCount > 0) {
-      res.status(200).json({ message: 'Inventory item deleted' });
-    } else {
-      res.status(404).json({ error: 'Inventory item not found.' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete inventory item.' });
+    res.status(200).json(oneInventory)
+  }catch(err){
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid inventory id"));
+      return;
   }
-};
-
-// Update an inventory item by ID
-const updateInventoryItem = async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Validate the provided ID as a valid ObjectId
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid inventory item ID.' });
-    }
-
-    const updatedInventoryItemData = req.body;
-
-    // Update the inventory item in the database
-    const db = initDb.getDb().db(database);
-    const inventoryItem = await db
-      .collection(collection)
-      .findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: updatedInventoryItemData },
-        { returnOriginal: false }
-      );
-
-    if (!inventoryItem.value) {
-      return res.status(404).json({ error: 'Inventory item not found.' });
-    }
-
-    // If the inventory item is updated successfully, send it as a JSON response with a 200 status message
-    res.status(200).json(inventoryItem.value);
-  } catch (error) {
-    // If any error occurs during the process, send a generic server error response
-    res.status(500).json({ error: 'Failed to update inventory item.' });
+  next(err);
   }
-};
+}
+const updateInventoryItem = async (req,res, next) => {
+  try{
+    const updateInventory = await InventoryItem.findByIdAndUpdate(
+      {_id: req.params.id}, {$set: req.body}
+    )
 
+    if(!updateInventory) {
+      throw errorHandler(404, 'Inventory does not exist')
+    }
+    res.status(204).json(updateInventory)
+  }catch(err){
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid inventory id"));
+      return;
+  }
+  next(err);
+  }
+}
+const deleteInventoryItem = async (req, res, next) => {
+  try{
+    const deleteInventory = await ShoppingList.findByIdAndDelete(
+      req.params.id
+    )
+
+    if(!deleteInventory) {
+      throw errorHandler(404, 'Inventory does not exist')
+    }
+    res.status(204).json(deleteInventory)
+  }catch(err){
+    if(err instanceof mongoose.CastError){
+      next(errorHandler(400, "Invalid inventory id"));
+      return;
+  }
+  next(err);
+  }
+}
 module.exports = {
   createInventoryItem,
   getAllInventoryItems,
@@ -141,3 +85,92 @@ module.exports = {
   deleteInventoryItem,
   updateInventoryItem,
 };
+
+
+// const createInventoryItem = async (req, res) => {
+//   try {
+//     const inventoryItemData = req.body;
+
+//     // Create a new instance of the InventoryItem model with the provided data
+//     const inventoryItem = new InventoryItem(inventoryItemData);
+
+//     // Save the new inventory item to the database using insertOne
+//     const savedInventory = inventoryItem.save()
+
+//     if (response.acknowledged) {
+//       // If the inventory item creation is successful, send the created inventory item as a JSON response with a status code of 201
+//       res.status(201).json(`Data saved: ${savedInventory}`)
+//     } else {
+//       // If the inventory item creation is not acknowledged, handle the error and send an appropriate error response
+//       res
+//         .status(500)
+//         .json(response.error || 'Some error occurred while creating the inventory item.',
+//         );
+//     }
+//   } catch (error) {
+//     // If any server error occurs during the process, send a generic server error response
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// };
+
+// const getAllInventoryItems = async (req, res) => {
+//   try {
+//     const inventoryItems = InventoryItem.find()
+//     // Send the retrieved inventory items as a JSON response
+//     res.json(inventoryItems);
+//   } catch (error) {
+//     // Handle errors and send an appropriate error response
+//     res.status(500).json({ error: 'Failed to fetch inventory items.' });
+//   }
+// };
+
+// const getInventoryItemById = async (req, res) => {
+//   try {
+//     const oneInventory = await InventoryItem.findById(req.params.id)
+
+//     if (!oneInventory) {
+//       return res.status(404).json({ error: 'Inventory item not found.' });
+//     }
+
+//     // If the inventory item is found, send it as a JSON response with a 200 status message
+//     res.status(200).json(oneInventory);
+//   } catch (error) {
+//     // If any error occurs during the process, send a generic server error response
+//     res.status(500).json({ error: 'Failed to fetch inventory item.' });
+//   }
+// };
+
+// //Delete an inventory item by id
+// const deleteInventoryItem = async (req, res) => {
+  
+//   try {
+//     const deleteInventory = await InventoryItem.findByIdAndDelete(req.params.id)
+
+//     if (deleteInventory.deletedCount > 0) {
+//       res.status(200).json({ message: 'Inventory item deleted' });
+//     } else {
+//       res.status(404).json({ error: 'Inventory item not found.' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to delete inventory item.' });
+//   }
+// };
+
+// // Update an inventory item by ID
+// const updateInventoryItem = async (req, res) => {
+  
+//   try {
+//     const editInventory = await InventoryItem.findByIdAndUpdate(req.params.id)
+
+//     if (!editInventory.value) {
+//       return res.status(404).json({ error: 'Inventory item not found.' });
+//     }
+
+//     // If the inventory item is updated successfully, send it as a JSON response with a 200 status message
+//     res.status(200).json(editInventory.value);
+//   } catch (error) {
+//     // If any error occurs during the process, send a generic server error response
+//     res.status(500).json({ error: 'Failed to update inventory item.' });
+//   }
+// };
+

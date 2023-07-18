@@ -13,4 +13,6 @@ router.use('/recipes', require('./recipes'));
 router.use('/shoppingList', require('./shoppingList'));
 
 router.use('/auth', require('./oauth'));
+router.use('/auth', require('../routes/googleoauth'))
+router.use('/auth', require('../routes/githuboauth'))
 module.exports = router;

@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 
-const customRecipeSchema = new mongoose.Schema({
+const customRecipeSchema = mongoose.Schema({
   recipeName: { type: String, required: true },
   ingredients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' }],
   preparationSteps: { type: String },
